@@ -12,7 +12,7 @@ const RolesControllers = {
       data: getThem,
     });
   },
-  async createRoles(req, res, next) {
+  async createRoles(req, res) {
     const role = _.pick(req.body, "role");
 
     const { error } = validate.validateInput(role);
@@ -21,11 +21,12 @@ const RolesControllers = {
     }
 
     const checkRoleExistance = await Role.checkRole(role.role);
-    if (checkRoleExistance.length)
+    console.log(checkRoleExistance);
+    if (checkRoleExistance)
       return res.status(400).send({ message: "The role already exists" });
 
     const create = await Role.createRole(role);
-
+    console.log(create);
     return res.status(201).send({
       status: 201,
       data: create,

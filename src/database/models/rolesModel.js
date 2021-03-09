@@ -8,10 +8,13 @@ const RolesModel = {
       db.query(queryText, (err, res) => {
         if (res) {
           const { rows } = res;
+          console.log(rows);
           return resolve(rows[0]);
         }
         return reject(err);
       });
+    }).catch((e) => {
+      // console.error(e);
     });
   },
 
@@ -22,10 +25,13 @@ const RolesModel = {
       db.query(queryText, [role], (err, res) => {
         if (res) {
           const { rows } = res;
+          console.log(rows);
           return resolve(rows);
         }
         return reject(err);
       });
+    }).catch((e) => {
+      // console.error(e);
     });
   },
 
