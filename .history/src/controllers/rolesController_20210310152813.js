@@ -21,7 +21,7 @@ const RolesControllers = {
         }
 
         const checkRoleExistence = await Role.checkRole(role.role);
-        // console.log(checkRoleExistence);
+        console.log(checkRoleExistence);
         if (checkRoleExistence.length)
             return res.status(400).send({ message: "The role already exists" });
 

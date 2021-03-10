@@ -10,10 +10,10 @@ require("./startups/errors")();
 require("./startups/startup")(app);
 
 // // tb.createTasksTable();
-// tb.createRolesTable();
-// tb.createRanksTable();
-// tb.createUsersTable()
-// tb.createEnum();
+tb.createRolesTable();
+tb.createRanksTable();
+// tb.createUsersTable();
+// // tb.createEnum();
 
 const port = process.env.port || 5000;
 

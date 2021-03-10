@@ -5,7 +5,7 @@ const RolesModel = {
         const queryText = `INSERT INTO roles (role) VALUES('${rowData.role}') RETURNING *;`;
 
         await db.query(queryText, (err, res) => {
-            if (res) {
+            if (!err) {
                 const { rows } = res;
                 return rows[0]
             }
@@ -31,9 +31,9 @@ const RolesModel = {
     async checkRole(role) {
         const queryText = "SELECT role FROM roles WHERE role = $1;";
         await db.query(queryText, [role], (err, res) => {
-                if (res) {
-                    const { rows } = res
-                    return rows
+                if (!err) {
+                    console.log(res)
+                    return res
                 }
                 return err
             })

@@ -7,7 +7,7 @@ import wrapRoute from "../middleware/asyncErrors";
 const RolesControllers = {
     async getAllRoles(req, res) {
         const getThem = await Role.fetchAll();
-        console.log(getThem)
+
         return res.status(200).send({
             data: getThem,
         });
@@ -15,14 +15,14 @@ const RolesControllers = {
     async createRoles(req, res) {
         const role = _.pick(req.body, "role");
 
-        const { error } = await validate.validateInput(role);
+        const { error } = validate.validateInput(role);
         if (error) {
             return res.status(400).send({ message: error.details[0].message });
         }
 
-        const checkRoleExistence = await Role.checkRole(role.role);
-        // console.log(checkRoleExistence);
-        if (checkRoleExistence.length)
+        const checkRoleExistance = await Role.checkRole(role.role);
+        console.log(checkRoleExistance);
+        if (checkRoleExistance)
             return res.status(400).send({ message: "The role already exists" });
 
         const create = await Role.createRole(role);

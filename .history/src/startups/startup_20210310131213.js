@@ -12,7 +12,7 @@ module.exports = (app) => {
     if (process.env.NODE_ENV === "development") {
         app.use(morgan("tiny"));
     }
-
     app.use("/nepserv", Auth)
+
     app.use("/nepserv", Role);
 };

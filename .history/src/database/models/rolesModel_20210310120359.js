@@ -5,7 +5,7 @@ const RolesModel = {
         const queryText = `INSERT INTO roles (role) VALUES('${rowData.role}') RETURNING *;`;
 
         await db.query(queryText, (err, res) => {
-            if (res) {
+            if (!err) {
                 const { rows } = res;
                 return rows[0]
             }
