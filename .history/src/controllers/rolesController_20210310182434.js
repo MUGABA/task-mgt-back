@@ -31,7 +31,7 @@ const RolesControllers = {
 
 
         // First create the points to check the existence of the rank and role to the user
-
+        //  
 
         const checkRoleExistence = await Role.checkRole(role.role);
         if (checkRoleExistence.length)

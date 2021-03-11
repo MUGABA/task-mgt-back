@@ -13,6 +13,15 @@ pool.connect((err, res) => {
 });
 
 
+module.exports = (textQuery) => {
+    return new Promise((reject, resolve) => {
+        pool.query(textQuery, (err, res) => {
+            if (!err) {
+                return res
+            }
+            return err
+        })
+    })
+}
 
-
-// export default pool;
+export default pool;

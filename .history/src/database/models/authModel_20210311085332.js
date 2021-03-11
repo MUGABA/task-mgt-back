@@ -1,6 +1,17 @@
 import db from '../connections/connection'
 const AuthModel = {
     registerUser(rowData) {
+        const queryText = `INSERT INTO users (email,username,password, contact,position,role, level)
+        values(
+            '${rowData.email}',
+            '${rowData.username}',
+            '${rowData.password}',
+            '${rowData.contact}',
+            '${rowData.position}',
+            '${rowData.role}',
+            '${rowData.level}'
+        )
+        RETURNING *;`;
         return new Promise(async(reject, resolve) => {
                 const queryText = `INSERT INTO users (email,username,password, contact,position,role, level)
             values(

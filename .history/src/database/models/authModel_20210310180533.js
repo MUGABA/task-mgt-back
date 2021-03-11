@@ -23,7 +23,7 @@ const AuthModel = {
                 })
             })
             .catch(e => {
-                return e;
+                return e
             }).then(result => {
                 return result
             })

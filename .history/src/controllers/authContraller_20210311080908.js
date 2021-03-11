@@ -23,6 +23,7 @@ const AuthController = {
         console.log(user.password);
 
         const create = await AuthModel.registerUser(user);
+        console.log(create)
 
         return res.status(201).send({
             status: 201,

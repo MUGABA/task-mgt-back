@@ -22,7 +22,7 @@ const RolesControllers = {
 
         // check where the role exists 
         // check whether the ranks exist
-        // check whether the available user is  a lead to create another user
+        // check whether the available user is  alead to create another user
         // user is not generated token right away right away...
         // user should have logged in to create that user 
         // user should be able to change their their password upon being their details.
@@ -31,7 +31,7 @@ const RolesControllers = {
 
 
         // First create the points to check the existence of the rank and role to the user
-
+        //  
 
         const checkRoleExistence = await Role.checkRole(role.role);
         if (checkRoleExistence.length)
