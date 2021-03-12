@@ -5,16 +5,14 @@ const tasks = {
   create: `CREATE TABLE IF NOT EXISTS tasks (
         task_id SERIAL PRIMARY KEY,
         title VARCHAR(255) NOT NULL,
-        start_date TIMESTAMP,
-        end_date TIMESTAMP,
+        start_date TIMESTAMP NOT NULL,
+        end_date TIMESTAMP NOT NULL,
         deliverables TEXT NOT NULL,
         assign INTEGER,
         supervisor INTEGER,
-        creator INTEGER,
-        complete INTEGER DEFAULT 0,
+        complete INTEGER DEFAULT 0;
         CONSTRAINT pk_assign FOREIGN KEY (assign) REFERENCES users(user_id),
-        CONSTRAINT pk_supervisor FOREIGN KEY (supervisor) REFERENCES users(user_id),
-        constraint pk_creator foreign key (creator) references users(user_id)
+        CONSTRAINT pk_supervisor FOREIGN KEY (supervisor) REFERENCES users(user_id)
     );`,
   delete: "DROP TABLE IF EXISTS tasks;",
 };
@@ -24,7 +22,7 @@ const comments = {
         comment_id SERIAL PRIMARY KEY,
         task INTEGER,
         comment TEXT,
-        commenter INTEGER
+        commentor INTEGER
     );`,
   delete: `DROP TABLE IF EXISTS comments;`,
 };
@@ -119,7 +117,7 @@ const createCommentsTable = () => {
   });
 };
 
-function deleteCommentsTable() {
+function deleteCommectsTable() {
   return new Promise((reject, resolve) => {
     db.query(comments.delete, (err) => {
       if (!err) return resolve("table deleted");
@@ -241,7 +239,7 @@ export default {
   createTasksTable,
   deleteTasksTable,
   createCommentsTable,
-  deleteCommentsTable,
+  deleteCommectsTable,
   createUsersTable,
   deleteUsersTable,
   createRolesTable,

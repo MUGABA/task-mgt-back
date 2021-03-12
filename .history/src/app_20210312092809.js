@@ -14,7 +14,7 @@ require("./startups/startup")(app);
 // tb.createRanksTable();
 // tb.createUsersTable()
 // tb.createEnum();
-// tb.createUsersTable();
+tb.createUsersTable();
 
 const port = process.env.port || 5000;
 

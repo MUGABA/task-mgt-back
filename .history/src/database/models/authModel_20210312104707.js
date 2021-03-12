@@ -65,11 +65,25 @@ const AuthModel = {
   },
   async checkUserWithId(id) {
     return new Promise(async (resolve, reject) => {
-      const textQuery = "select * from users WHERE user_id = $1;";
+      const textQuery = `select
+            user_id,
+            email,
+            username,
+            password,
+            contact,
+            level,
+            r.rank as rank,
+            ro.role as role
+            from users u
+            join ranks r
+            on u.position = r.rank_id
+            join roles ro
+            on u.role = ro.role_id
+            where u.email = $1;
+        `;
       await db.query(textQuery, [id], (err, res) => {
         if (res) {
           const { rows } = res;
-          // console.log(rows);
           return resolve(rows);
         }
         return reject(err);
@@ -82,6 +96,8 @@ const AuthModel = {
         return err;
       });
   },
+
+  
 };
 
 export default AuthModel;

@@ -65,11 +65,11 @@ const AuthModel = {
   },
   async checkUserWithId(id) {
     return new Promise(async (resolve, reject) => {
-      const textQuery = "select * from users WHERE user_id = $1;";
+      const textQuery = `select * from users;`;
       await db.query(textQuery, [id], (err, res) => {
         if (res) {
           const { rows } = res;
-          // console.log(rows);
+          console.log(rows);
           return resolve(rows);
         }
         return reject(err);

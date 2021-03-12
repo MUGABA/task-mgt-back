@@ -11,10 +11,9 @@ const tasks = {
         assign INTEGER,
         supervisor INTEGER,
         creator INTEGER,
-        complete INTEGER DEFAULT 0,
+        complete INTEGER DEFAULT 0;
         CONSTRAINT pk_assign FOREIGN KEY (assign) REFERENCES users(user_id),
-        CONSTRAINT pk_supervisor FOREIGN KEY (supervisor) REFERENCES users(user_id),
-        constraint pk_creator foreign key (creator) references users(user_id)
+        CONSTRAINT pk_supervisor FOREIGN KEY (supervisor) REFERENCES users(user_id)
     );`,
   delete: "DROP TABLE IF EXISTS tasks;",
 };
@@ -119,7 +118,7 @@ const createCommentsTable = () => {
   });
 };
 
-function deleteCommentsTable() {
+function deleteCommectsTable() {
   return new Promise((reject, resolve) => {
     db.query(comments.delete, (err) => {
       if (!err) return resolve("table deleted");
@@ -241,7 +240,7 @@ export default {
   createTasksTable,
   deleteTasksTable,
   createCommentsTable,
-  deleteCommentsTable,
+  deleteCommectsTable,
   createUsersTable,
   deleteUsersTable,
   createRolesTable,

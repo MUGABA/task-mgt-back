@@ -69,7 +69,7 @@ const AuthModel = {
       await db.query(textQuery, [id], (err, res) => {
         if (res) {
           const { rows } = res;
-          // console.log(rows);
+          console.log(rows);
           return resolve(rows);
         }
         return reject(err);

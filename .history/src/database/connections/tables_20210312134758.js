@@ -13,8 +13,7 @@ const tasks = {
         creator INTEGER,
         complete INTEGER DEFAULT 0,
         CONSTRAINT pk_assign FOREIGN KEY (assign) REFERENCES users(user_id),
-        CONSTRAINT pk_supervisor FOREIGN KEY (supervisor) REFERENCES users(user_id),
-        constraint pk_creator foreign key (creator) references users(user_id)
+        CONSTRAINT pk_supervisor FOREIGN KEY (supervisor) REFERENCES users(user_id)
     );`,
   delete: "DROP TABLE IF EXISTS tasks;",
 };
