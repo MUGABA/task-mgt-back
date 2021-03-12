@@ -1,4 +1,4 @@
 {
   "dbUrl": "postgresql://postgres:postgres@localhost:5432/tasks",
-  "secretkey": ""
+  "secretkey": "my_secret_key"
 }

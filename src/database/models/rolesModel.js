@@ -1,83 +1,86 @@
 import db from ".././connections/connection";
 
 const RolesModel = {
-    async createRole(rowData) {
-        const queryText = `INSERT INTO roles (role) VALUES('${rowData.role}') RETURNING *;`;
+  async createRole(rowData) {
+    return new Promise((reject, resolve) => {
+      const queryText = `INSERT INTO roles (role) VALUES('${rowData.role}') RETURNING *;`;
+      db.query(queryText, (err, res) => {
+        if (res) {
+          const { rows } = res;
+          console.log(rows);
+          return resolve(rows[0]);
+        }
+        return reject(err);
+      });
+    })
+      .then((result) => {
+        return result;
+      })
+      .catch((e) => {
+        return e;
+      });
+  },
 
-        await db.query(queryText, (err, res) => {
-            if (res) {
-                const { rows } = res;
-                return rows[0]
-            }
-        })
+  async checkRole(roleId) {
+    return new Promise(async (reject, resolve) => {
+      const queryText = "SELECT role FROM roles WHERE role_id = $1;";
 
+      await db.query(queryText, [roleId], (err, res) => {
+        if (res) {
+          const { rows } = res;
+          return resolve(rows);
+        }
+        return reject(err);
+      });
+    })
+      .then((result) => {
+        return result;
+      })
+      .catch((e) => {
+        return e;
+      });
+  },
 
-        // return new Promise((reject, resolve) => {
-        //     const queryText = `INSERT INTO roles (role) VALUES('${rowData.role}') RETURNING *;`;
+  async checkRoleName(role) {
+    return new Promise(async (reject, resolve) => {
+      const queryText = "SELECT role FROM roles WHERE role = $1;";
 
-        //     db.query(queryText, (err, res) => {
-        //         if (res) {
-        //             const { rows } = res;
-        //             console.log(rows);
-        //             return resolve(rows[0]);
-        //         }
-        //         return reject(err);
-        //     });
-        // }).catch((e) => {
-        //     // console.error(e);
-        // });
-    },
+      await db.query(queryText, [role], (err, res) => {
+        if (res) {
+          const { rows } = res;
+          return resolve(rows);
+        }
+        return reject(err);
+      });
+    })
+      .then((result) => {
+        return result;
+      })
+      .catch((e) => {
+        return e;
+      });
+  },
 
-    async checkRole(role) {
-        const queryText = "SELECT role FROM roles WHERE role = $1;";
-        await db.query(queryText, [role], (err, res) => {
-                if (res) {
-                    const { rows } = res
-                    return rows
-                }
-                return err
-            })
-            // return new Promise((reject, resolve) => {
-            //     const queryText = "SELECT role FROM roles WHERE role = $1;";
+  fetchAll() {
+    return new Promise(async (reject, resolve) => {
+      const queryText = "SELECT * FROM roles;";
 
-        //     db.query(queryText, [role], (err, res) => {
-        //         if (res) {
-        //             const { rows } = res;
-        //             console.log(rows);
-        //             return resolve(rows);
-        //         }
-        //         return reject(err);
-        //     });
-        // }).catch((e) => {
-        //     // console.error(e); mouses 
-        // });
-    },
-
-    async fetchAll() {
-        const queryText = "SELECT * FROM roles;";
-        await db.query(queryText, (err, res) => {
-            if (!err) {
-                const { rows } = res
-                console.log(rows)
-                return rows
-            }
-        })
-
-        // return new Promise((reject, resolve) => {
-        //     const queryText = "SELECT * FROM roles;";
-
-        //     db.query(queryText, (err, res) => {
-        //         if (res) {
-        //             const { rows } = res;
-        //             console.log(rows)
-        //             return resolve(rows);
-        //         }
-        //         return reject(err);
-        //     });
-        // }).catch(e => {
-
-        // });
-    },
+      await db.query(queryText, (err, res) => {
+        if (res) {
+          const { rows } = res;
+          console.log(rows);
+          return resolve(rows);
+        }
+        return reject(err);
+      });
+    })
+      .then((result) => {
+        return result;
+      })
+      .catch((e) => {
+        return e;
+      });
+  },
 };
 
 export default RolesModel;
