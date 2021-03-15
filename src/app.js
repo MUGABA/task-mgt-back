@@ -9,7 +9,8 @@ const app = express();
 require("./startups/errors")();
 require("./startups/startup")(app);
 // tb.deleteRolesTable();
-// // tb.createTasksTable();
+// tb.createTasksTable();
+// tb.createCommentsTable();
 // tb.createRolesTable();
 // tb.createRanksTable();
 // tb.createUsersTable()

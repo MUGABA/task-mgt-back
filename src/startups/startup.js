@@ -4,7 +4,7 @@ import morgan from "morgan";
 import Role from "../endpoints/rolesRoutes";
 import Auth from "../endpoints/authRoutes";
 import Tasks from "../endpoints/taskRoutes";
-
+import Comment from "../endpoints/commentRoutes";
 require("express-async-errors");
 
 module.exports = (app) => {
@@ -17,4 +17,5 @@ module.exports = (app) => {
   app.use("/nepserv", Auth);
   app.use("/nepserv", Role);
   app.use("/nepserv", Tasks);
+  app.use("/nepserv", Comment);
 };

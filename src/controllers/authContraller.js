@@ -48,7 +48,7 @@ const AuthController = {
 
     return res.status(201).send({
       status: 201,
-      data: create,
+      data: _.omit(create[0], ["password"]),
       message: "User created successfully",
     });
   },

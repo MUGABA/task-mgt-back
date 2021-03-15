@@ -23,8 +23,10 @@ const comments = {
   create: `CREATE TABLE IF NOT EXISTS comments (
         comment_id SERIAL PRIMARY KEY,
         task INTEGER,
+        commentor INTEGER,
         comment TEXT,
-        commenter INTEGER
+        CONSTRAINT pk_commentor FOREIGN KEY (commentor) REFERENCES users(user_id),
+        CONSTRAINT pk_task FOREIGN KEY (task) REFERENCES tasks (task_id)
     );`,
   delete: `DROP TABLE IF EXISTS comments;`,
 };
