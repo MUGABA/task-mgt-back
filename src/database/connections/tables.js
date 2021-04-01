@@ -23,9 +23,9 @@ const comments = {
   create: `CREATE TABLE IF NOT EXISTS comments (
         comment_id SERIAL PRIMARY KEY,
         task INTEGER,
-        commentor INTEGER,
+        commenter INTEGER,
         comment TEXT,
-        CONSTRAINT pk_commentor FOREIGN KEY (commentor) REFERENCES users(user_id),
+        CONSTRAINT pk_commenter FOREIGN KEY (commenter) REFERENCES users(user_id),
         CONSTRAINT pk_task FOREIGN KEY (task) REFERENCES tasks (task_id)
     );`,
   delete: `DROP TABLE IF EXISTS comments;`,
@@ -59,13 +59,6 @@ const roles = {
 };
 
 // Ranks... These define category where an individual falls, it could be a dev, a marketier, an admin,
-const ranks = {
-  create: `CREATE TABLE IF NOT EXISTS ranks (
-        rank_id SERIAL PRIMARY KEY,
-        rank VARCHAR(50) NOT NULL
-    );`,
-  delete: "DROP TABLE IF EXISTS ranks;",
-};
 
 const projects = {
   create: `CREATE TABLE IF NOT EXISTS projects (

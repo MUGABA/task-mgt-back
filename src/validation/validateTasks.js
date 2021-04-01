@@ -6,7 +6,6 @@ const ValidateTasks = {
       title: Joi.string().required(),
       start_date: Joi.date(),
       end_date: Joi.date(),
-      deliverables: Joi.string().required(),
       assign: Joi.number(),
       supervisor: Joi.number(),
       complete: Joi.number(),

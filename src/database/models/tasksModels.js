@@ -3,12 +3,11 @@ import db from "../connections/connection";
 const TasksModel = {
   createTask(rowData, currentUser) {
     return new Promise(async (reject, resolve) => {
-      const queryText = `INSERT INTO tasks(title,start_date, end_date,deliverables,assign,supervisor,creator,complete)
+      const queryText = `INSERT INTO tasks(title,start_date, end_date,assign,supervisor,creator,complete)
             values(
                 '${rowData.title}',
                 '${rowData.start_date}',
                 '${rowData.end_date}',
-                '${rowData.deliverables}',
                 '${rowData.assign}',
                 '${rowData.supervisor}',
                 '${currentUser}',
@@ -91,9 +90,9 @@ const TasksModel = {
     return new Promise(async (reject, resolve) => {
       const queryText = `select 
         t.task_id as id,
+        t.title as title,
         t.start_date as start_date,
         t.end_date as end_date,
-        t.deliverables as deliverables,
         u.username as executed_by,
         us.username as supervisor,
         use.username as created_by,
@@ -123,6 +122,27 @@ const TasksModel = {
       const queryText = "DELETE FROM tasks WHERE task_id = $1;";
 
       await db.query(queryText, [taskId], (err, res) => {
+        if (!err) {
+          return resolve(res);
+        }
+        return reject(err);
+      });
+    })
+      .then((res) => res)
+      .catch((err) => err);
+  },
+  updateTaskOnce(taskId, rowData) {
+    return new Promise(async (reject, resolve) => {
+      const queryText = `
+      UPDATE tasks SET title='${rowData.title}',
+      start_date='${rowData.start_date}',
+      end_date='${rowData.end_date}',
+      assign='${rowData.assign}',
+      supervisor='${rowData.supervisor}',
+      complete='${rowData.complete}'
+      WHERE task_id='${taskId}';`;
+
+      await db.query(queryText, (err, res) => {
         if (!err) {
           return resolve(res);
         }

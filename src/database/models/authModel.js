@@ -3,15 +3,13 @@ import db from "../connections/connection";
 const AuthModel = {
   registerUser(rowData) {
     return new Promise(async (reject, resolve) => {
-      const queryText = `INSERT INTO users (email,username,password, contact,position,role, level)
+      const queryText = `INSERT INTO users (email,username,user_password, contact,user_role)
             values(
                 '${rowData.email}',
                 '${rowData.username}',
-                '${rowData.password}',
+                '${rowData.user_password}',
                 '${rowData.contact}',
-                '${rowData.position}',
-                '${rowData.role}',
-                '${rowData.level}'
+                '${rowData.user_role}'
             )
             RETURNING *;`;
 
@@ -36,16 +34,12 @@ const AuthModel = {
             user_id,
             email,
             username,
-            password,
+            user_password as password,
             contact,
-            level,
-            r.rank as rank,
             ro.role as role
             from users u
-            join ranks r
-            on u.position = r.rank_id
             join roles ro
-            on u.role = ro.role_id
+            on u.user_role = ro.role_id
             where u.email = $1;
         `;
       await db.query(textQuery, [email], (err, res) => {
@@ -63,13 +57,32 @@ const AuthModel = {
         return err;
       });
   },
-  async checkUserWithId(id) {
+  checkUserWithId(id) {
     return new Promise(async (resolve, reject) => {
       const textQuery = "select * from users WHERE user_id = $1;";
       await db.query(textQuery, [id], (err, res) => {
         if (res) {
           const { rows } = res;
           // console.log(rows);
+          return resolve(rows);
+        }
+        return reject(err);
+      });
+    })
+      .then((result) => {
+        return result;
+      })
+      .catch((err) => {
+        return err;
+      });
+  },
+
+  updateUserPassword(password, userId) {
+    return new Promise(async (resolve, reject) => {
+      const textQuery = `UPDATE users SET user_password='${password}'WHERE user_id='${userId}'`;
+      await db.query(textQuery, (err, res) => {
+        if (res) {
+          const { rows } = res;
           return resolve(rows);
         }
         return reject(err);
