@@ -10,6 +10,8 @@
     "dev": "nodemon src/app.js --exec babel-node"
   },
   "dependencies": {
+    "@hapi/hapi": "^20.1.2",
+    "@joi/date": "^2.1.0",
     "bcrypt": "^5.0.1",
     "config": "^3.3.4",
     "cors": "^2.8.5",

@@ -9,7 +9,7 @@ const TaskController = {
     const getAllTasks = await TasksModel.getAllTasks();
 
     if (!getAllTasks.length) {
-      return res.status(204).send({ status: 204, message: "No tasks yet." });
+      return res.status(200).send({ status: 200, message: "No tasks yet." });
     }
 
     return res.status(200).send({ status: 200, data: getAllTasks });
@@ -57,7 +57,7 @@ const TaskController = {
     const { id } = currentUser;
 
     const createTask = await TasksModel.createTask(task, id);
-
+    console.log(createTask);
     if (createTask.code)
       return res.status(500).send({
         status: 500,
@@ -248,6 +248,20 @@ const TaskController = {
       status: 200,
       message: "Your the task has been updated successfully",
     });
+  },
+  async getSingleTask(req, res) {
+    const taskId = req.params.task_id;
+
+    const getTask = await TasksModel.fetchSingleTask(taskId);
+    console.log(getTask);
+
+    if (!getTask.length) {
+      return res.status(404).send({
+        status: 404,
+        message: "Task is not available find another one",
+      });
+    }
+    return res.status(200).send({ status: 200, data: getTask[0] });
   },
 };
 

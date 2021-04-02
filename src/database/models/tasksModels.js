@@ -152,6 +152,38 @@ const TasksModel = {
       .then((res) => res)
       .catch((err) => err);
   },
+  fetchSingleTask(taskId) {
+    return new Promise(async (reject, resolve) => {
+      const queryText = `select 
+        t.task_id as id,
+        t.title as title,
+        t.start_date as start_date,
+        t.end_date as end_date,
+        DATE_PART('day', "end_date"::timestamp - "start_date"::timestamp),
+        u.username as executed_by,
+        us.username as supervisor,
+        use.username as created_by,
+        t.complete as completed
+        from tasks t 
+        join users u
+        on u.user_id = t.assign
+        join users us
+        on us.user_id=t.supervisor
+        join users use
+        on use.user_id=t.creator
+        where task_id=$1;`;
+
+      await db.query(queryText, [taskId], (err, res) => {
+        if (!err) {
+          const { rows } = res;
+          return resolve(rows);
+        }
+        return reject(err);
+      });
+    })
+      .then((res) => res)
+      .catch((err) => err);
+  },
 };
 
 export default TasksModel;

@@ -6,7 +6,6 @@ import Role from "../database/models/rolesModel";
 const RolesControllers = {
   async getAllRoles(req, res) {
     const getThem = await Role.fetchAll();
-    console.log(getThem);
     return res.status(200).send({
       data: getThem,
     });
