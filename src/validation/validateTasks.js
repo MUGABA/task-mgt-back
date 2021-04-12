@@ -4,8 +4,8 @@ const ValidateTasks = {
   validateNewTask(rowData) {
     const schema = Joi.object().keys({
       title: Joi.string().required(),
-      start_date: Joi.date().format("DD/MM/YYYY"),
-      end_date: Joi.date().format("DD/MM/YYYY"),
+      start_date: Joi.date(),
+      end_date: Joi.date(),
       assign: Joi.number(),
       supervisor: Joi.number(),
       complete: Joi.number(),

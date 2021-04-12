@@ -25,6 +25,15 @@ const ValidateUser = {
     });
     return schema.validate(rowData);
   },
+  validateUSerUpdate(rowData) {
+    const schema = Joi.object().keys({
+      email: Joi.string(),
+      username: Joi.string(),
+      contact: Joi.string(),
+      user_role: Joi.number(),
+    });
+    return schema.validate(rowData);
+  },
 };
 
 export default ValidateUser;

@@ -8,6 +8,15 @@ import AuthModel from "../database/models/authModel";
 import RolesModel from "../database/models/rolesModel";
 
 const AuthController = {
+  async getAllUsers(req, res) {
+    const getUsers = await AuthModel.fetchAllUsers();
+
+    if (!getUsers.length) {
+      return res.status(404).send({ status: 404, message: "No users yet" });
+    }
+
+    return res.status(200).send({ status: 200, data: getUsers });
+  },
   async registerUser(req, res) {
     const user = _.pick(req.body, [
       "email",
@@ -23,14 +32,18 @@ const AuthController = {
     }
 
     const checkUserAvailable = await AuthModel.checkUser(user.email);
-    console.log(checkUserAvailable);
     if (checkUserAvailable.length) {
       return res
         .status(400)
         .send({ status: 400, message: "User already exists" });
     }
 
-    //check whether the role exists that the user is being given
+    const checkUserName = await AuthModel.checkUSerName(user.username);
+    if (checkUserName.length) {
+      return res
+        .status(400)
+        .send({ status: 400, message: "sorry your name is taken" });
+    }
 
     const checkRole = await RolesModel.checkRole(user.user_role);
     if (!checkRole.length) {
@@ -42,7 +55,6 @@ const AuthController = {
     user.user_password = await generateHash(user.user_password);
 
     const create = await AuthModel.registerUser(user);
-    console.log(create);
 
     if (create.code)
       return res.status(500).send({
@@ -90,7 +102,6 @@ const AuthController = {
     }
 
     const token = await generateToken(user_id, email, username, role, level);
-
     return res
       .status(200)
       .header("x-auth-token", token)
@@ -140,6 +151,55 @@ const AuthController = {
       .status(200)
       .send({ status: 200, message: "Update done successfully" });
     // give the user the token in the header to be given the the body of the user.
+  },
+  async me(req, res) {
+    const currentUSer = req.user;
+
+    const { id } = currentUSer;
+
+    const getCurrentUser = await AuthModel.fetchCurrentUser(id);
+    if (!getCurrentUser.length) {
+      return res
+        .status(404)
+        .send({ status: 404, message: "User not available" });
+    }
+
+    return res.status(200).send({
+      status: 200,
+      data: getCurrentUser[0],
+      message: "User fetched successfully",
+    });
+  },
+  async updateUSerDetails(req, res) {
+    const user = _.pick(req.body, [
+      "email",
+      "username",
+      "contact",
+      "user_role",
+    ]);
+    const currentUSer = req.user;
+    const { id } = currentUSer;
+    // get the user details from the body
+    const { error } = await validate.validateUSerUpdate(user);
+    if (error) {
+      return res
+        .status(400)
+        .send({ status: 400, message: error.details[0].message });
+    }
+
+    const checkUserName = await AuthModel.checkUSerName(user.username);
+
+    if (checkUserName.length && checkUserName[0].user_id !== id) {
+      return res
+        .status(400)
+        .send({ status: 400, message: "sorry your name is taken" });
+    }
+    // create a method in the update the user details except for the password
+    const info = await AuthModel.updateUserDetails(user, id);
+    console.log(info);
+    return res
+      .status(200)
+      .send({ status: 200, message: "details updated successfully" });
   },
 };
 

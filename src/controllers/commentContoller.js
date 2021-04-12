@@ -10,7 +10,7 @@ const CommentController = {
     const taskId = req.params.task_id;
     const currentUser = req.user;
 
-    const { error } = await validate.validateComent(comment);
+    const { error } = await validate.validateComment(comment);
     if (error) {
       return res
         .status(404)
@@ -29,7 +29,7 @@ const CommentController = {
     // creating new object to be passed to the insert function
     const obj = {
       task: taskId,
-      commentor: id,
+      commenter: id,
       comment: comment.comment,
     };
 
@@ -42,7 +42,7 @@ const CommentController = {
     });
   },
 
-  async fetchAllcommentsOnATask(req, res) {
+  async fetchAllCommentsOnATask(req, res) {
     const taskId = req.params.task_id;
 
     const checkTaskAvailable = await Task.findTaskById(taskId);
@@ -68,8 +68,8 @@ const CommentController = {
     const commentId = req.params.comment_id;
 
     // find out whether the comment is available
-    const checkcomment = await Comment.getCommentById(commentId);
-    if (!checkcomment.length) {
+    const checkComment = await Comment.getCommentById(commentId);
+    if (!checkComment.length) {
       return res
         .status(404)
         .send({ status: 404, message: "Comment not available" });

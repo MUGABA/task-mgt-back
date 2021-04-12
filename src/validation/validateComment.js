@@ -1,7 +1,7 @@
 import Joi from "joi";
 
 const ValidateComment = {
-  validateComent(rowData) {
+  validateComment(rowData) {
     const schema = Joi.object().keys({
       comment: Joi.string().required(),
     });

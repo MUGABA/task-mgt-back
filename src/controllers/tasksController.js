@@ -210,7 +210,6 @@ const TaskController = {
       "title",
       "start_date",
       "end_date",
-      "deliverables",
       "assign",
       "supervisor",
       "complete",
@@ -243,7 +242,7 @@ const TaskController = {
     }
 
     const updatingTheDb = await TasksModel.updateTaskOnce(taskId, task);
-
+    console.log(updatingTheDb);
     return res.status(200).send({
       status: 200,
       message: "Your the task has been updated successfully",
@@ -253,7 +252,6 @@ const TaskController = {
     const taskId = req.params.task_id;
 
     const getTask = await TasksModel.fetchSingleTask(taskId);
-    console.log(getTask);
 
     if (!getTask.length) {
       return res.status(404).send({

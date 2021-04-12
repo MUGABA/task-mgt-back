@@ -16,7 +16,7 @@ const TasksModel = {
       await db.query(queryText, (err, res) => {
         if (!err) {
           const { rows } = res;
-          console.log(rows);
+
           return resolve(rows);
         } else {
           console.log(err);
@@ -91,19 +91,21 @@ const TasksModel = {
       const queryText = `select 
         t.task_id as id,
         t.title as title,
-        t.start_date as start_date,
-        t.end_date as end_date,
-        u.username as executed_by,
+        to_char(t.start_date,'YYYY-MM-DD') as start_date,
+        to_char(t.end_date,'YYYY-MM-DD') as end_date,
+        u.username as assign,
         us.username as supervisor,
+        DATE_PART('day', "end_date"::timestamp - "start_date"::timestamp) as remaining_days,
         use.username as created_by,
-        t.complete as completed
+        t.complete as complete
         from tasks t 
         join users u
         on u.user_id = t.assign
         join users us
         on us.user_id=t.supervisor
         join users use
-        on use.user_id=t.creator;`;
+        on use.user_id=t.creator
+        order by id;`;
 
       await db.query(queryText, (err, res) => {
         if (!err) {
@@ -157,13 +159,13 @@ const TasksModel = {
       const queryText = `select 
         t.task_id as id,
         t.title as title,
-        t.start_date as start_date,
-        t.end_date as end_date,
-        DATE_PART('day', "end_date"::timestamp - "start_date"::timestamp),
-        u.username as executed_by,
+        to_char(t.start_date,'YYYY-MM-DD') as start_date,
+        to_char(t.end_date,'YYYY-MM-DD') as end_date,
+        DATE_PART('day', "end_date"::timestamp - "start_date"::timestamp) as remaining_days,
+        u.username  as assign,
         us.username as supervisor,
         use.username as created_by,
-        t.complete as completed
+        t.complete as complete
         from tasks t 
         join users u
         on u.user_id = t.assign

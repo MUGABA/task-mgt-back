@@ -3,10 +3,10 @@ import db from "../connections/connection";
 const CommentModel = {
   writeAComment(rowData) {
     return new Promise(async (reject, resolve) => {
-      const queryText = `INSERT INTO comments (task,commentor,comment)
+      const queryText = `INSERT INTO comments (task,commenter,comment)
             values(
                 '${rowData.task}',
-                '${rowData.commentor}',
+                '${rowData.commenter}',
                 '${rowData.comment}'
             ) RETURNING *;`;
 
@@ -26,12 +26,15 @@ const CommentModel = {
     return new Promise(async (reject, resolve) => {
       const queryText = `
         select 
-        u.username as commentor,
+        comment_id as id,
+        commenter as commenter_id,
+        u.username as commenter,
         c.comment as comment
         from comments c
         join users u
-        on c.commentor = u.user_id
-        where c.task = $1;
+        on c.commenter = u.user_id
+        where c.task = $1
+        order by create_on desc;
         `;
 
       await db.query(queryText, [taskId], (err, res) => {

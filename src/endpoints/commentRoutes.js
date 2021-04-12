@@ -7,7 +7,7 @@ const router = Router();
 
 router.post("/comment/:task_id", auth, Comment.createComment);
 
-router.get("/comment/:task_id", auth, Comment.fetchAllcommentsOnATask);
+router.get("/comment/:task_id", auth, Comment.fetchAllCommentsOnATask);
 
 router.delete("/comment/:comment_id", auth, Comment.deleteComment);
 
