@@ -36,11 +36,9 @@ const users = {
         user_id SERIAL PRIMARY KEY,
         email VARCHAR(200) UNIQUE NOT NULL,
         username VARCHAR(50) NOT NULL,
-        password TEXT NOT NULL,
+        user_password TEXT NOT NULL,
         contact VARCHAR(15) NOT NULL,
-        position INTEGER,
-        role INTEGER,
-        level level,
+        user_role INTEGER,
         CONSTRAINT fk_position FOREIGN KEY (position) REFERENCES ranks(rank_id),
         CONSTRAINT fk_role FOREIGN KEY (role) REFERENCES roles(role_id)
     );`,

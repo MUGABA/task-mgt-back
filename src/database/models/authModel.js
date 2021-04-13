@@ -18,6 +18,7 @@ const AuthModel = {
           const { rows } = res;
           return resolve(rows);
         }
+
         return reject(err);
       });
     })
