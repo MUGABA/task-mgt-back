@@ -54,11 +54,10 @@ const CommentController = {
     }
 
     const getThem = await Comment.getAllCommentsOnTask(taskId);
-
     if (getThem.length === 0) {
       return res
         .status(400)
-        .send({ status: 400, message: "Task no Comments yet" });
+        .send({ status: 400, message: "Task no Comments yet", data: [] });
     }
 
     return res.status(200).send({ status: 200, data: getThem });

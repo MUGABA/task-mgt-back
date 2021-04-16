@@ -34,12 +34,13 @@ const CommentModel = {
         join users u
         on c.commenter = u.user_id
         where c.task = $1
-        order by create_on desc;
+        order by c.created_on desc;
         `;
 
       await db.query(queryText, [taskId], (err, res) => {
         if (res) {
           const { rows } = res;
+          console.log(rows);
           return resolve(rows);
         }
         return reject(err);

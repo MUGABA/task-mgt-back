@@ -25,6 +25,7 @@ const comments = {
         task INTEGER,
         commenter INTEGER,
         comment TEXT,
+        created_on TIMESTAMP DEFAULT NOW(),
         CONSTRAINT pk_commenter FOREIGN KEY (commenter) REFERENCES users(user_id),
         CONSTRAINT pk_task FOREIGN KEY (task) REFERENCES tasks (task_id)
     );`,

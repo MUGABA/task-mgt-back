@@ -1,10 +1,12 @@
 import express from "express";
 import morgan from "morgan";
-import cors from 'cors'
+import cors from "cors";
 import Role from "../endpoints/rolesRoutes";
 import Auth from "../endpoints/authRoutes";
 import Tasks from "../endpoints/taskRoutes";
 import Comment from "../endpoints/commentRoutes";
+import Project from "../endpoints/projectRoutes";
+import Institution from "../endpoints/institutionRoutes";
 require("express-async-errors");
 
 module.exports = (app) => {
@@ -19,4 +21,6 @@ module.exports = (app) => {
   app.use("/nepserv", Role);
   app.use("/nepserv", Tasks);
   app.use("/nepserv", Comment);
+  app.use("/nepserv", Project);
+  app.use("/nepserv", Institution);
 };
