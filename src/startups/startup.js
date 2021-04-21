@@ -1,6 +1,8 @@
 import express from "express";
 import morgan from "morgan";
 import cors from "cors";
+import path from "path";
+
 import Role from "../endpoints/rolesRoutes";
 import Auth from "../endpoints/authRoutes";
 import Tasks from "../endpoints/taskRoutes";
@@ -16,6 +18,11 @@ module.exports = (app) => {
   if (process.env.NODE_ENV === "development") {
     app.use(morgan("tiny"));
   }
+
+  app.use(
+    "/uploads",
+    express.static(path.resolve(`${__dirname}/../../uploads`))
+  );
 
   app.use("/nepserv", Auth);
   app.use("/nepserv", Role);
