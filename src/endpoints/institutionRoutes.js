@@ -18,15 +18,30 @@ router.post(
   InstitutionController.createAnInstitution
 );
 
+router.get("/institutions", auth, InstitutionController.getAllInstitutions);
+
+router.post(
+  "/institutions/:name",
+  InstitutionController.CreateInstitutionLeaders
+);
+
 router.post(
   "/institutions/types",
   auth,
   InstitutionController.createAnInstitutionType
 );
+
 router.get(
   "/institutions/types",
   auth,
   InstitutionController.getAllAvailableInstitutionType
 );
 
+router.put("/leader/:leader_id", auth, InstitutionController.UpdateALeader);
+
+router.get(
+  "/leader/:name",
+  auth,
+  InstitutionController.getAllLeadersOfAnInstitution
+);
 export default router;

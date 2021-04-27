@@ -9,6 +9,7 @@ import Tasks from "../endpoints/taskRoutes";
 import Comment from "../endpoints/commentRoutes";
 import Project from "../endpoints/projectRoutes";
 import Institution from "../endpoints/institutionRoutes";
+import Permissions from "../endpoints/permissionRoutes";
 require("express-async-errors");
 
 module.exports = (app) => {
@@ -30,4 +31,5 @@ module.exports = (app) => {
   app.use("/nepserv", Comment);
   app.use("/nepserv", Project);
   app.use("/nepserv", Institution);
+  app.use("/nepserv", Permissions);
 };

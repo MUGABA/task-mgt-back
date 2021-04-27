@@ -95,7 +95,7 @@ const TasksModel = {
         to_char(t.end_date,'YYYY-MM-DD') as end_date,
         u.username as assign,
         us.username as supervisor,
-        DATE_PART('day', "end_date"::timestamp - "start_date"::timestamp) as remaining_days,
+        DATE_PART('day', "end_date"::timestamp - now()::timestamp) as remaining_days,
         use.username as created_by,
         t.complete as complete
         from tasks t 
@@ -161,7 +161,7 @@ const TasksModel = {
         t.title as title,
         to_char(t.start_date,'YYYY-MM-DD') as start_date,
         to_char(t.end_date,'YYYY-MM-DD') as end_date,
-        DATE_PART('day', "end_date"::timestamp - "start_date"::timestamp) as remaining_days,
+        DATE_PART('day', "end_date"::timestamp - now()::timestamp) as remaining_days,
         u.username  as assign,
         us.username as supervisor,
         use.username as created_by,

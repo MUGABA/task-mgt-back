@@ -21,6 +21,17 @@ const ValidateInstitution = {
     });
     return schema.validate(rowData);
   },
+
+  validateLeader(rowData) {
+    const schema = Joi.object().keys({
+      first_name: Joi.string().required(),
+      last_name: Joi.string().required(),
+      email: Joi.string().email(),
+      leader_contact: Joi.string().required(),
+      leader_location: Joi.string().required(),
+    });
+    return schema.validate(rowData);
+  },
 };
 
 export default ValidateInstitution;
