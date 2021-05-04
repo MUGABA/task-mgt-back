@@ -20,6 +20,18 @@ router.post(
 
 router.get("/institutions", auth, InstitutionController.getAllInstitutions);
 
+router.get(
+  "/institutions/:id",
+  auth,
+  InstitutionController.fetchSingleInstitutionById
+);
+
+router.get(
+  "/institutions/leaders/:id",
+  auth,
+  InstitutionController.fetchSingleInstitutionLeadersById
+);
+
 router.post(
   "/institutions/:name",
   InstitutionController.CreateInstitutionLeaders
@@ -32,9 +44,9 @@ router.post(
 );
 
 router.get(
-  "/institutions/types",
+  "/institutions/types/all",
   auth,
-  InstitutionController.getAllAvailableInstitutionType
+  InstitutionController.getAllAvailableInstitutionTypes
 );
 
 router.put("/leader/:leader_id", auth, InstitutionController.UpdateALeader);

@@ -4,7 +4,7 @@ import PermissionModal from "../database/models/permissionModel";
 const PermissionController = {
   async fetchAllPermissions(req, res) {
     const getPermissions = await PermissionModal.getAllPermissions();
-    console.log(getPermissions);
+
     if (!getPermissions.length) {
       return res.status(404).send({ message: "No Permissions yet", data: [] });
     }
@@ -21,7 +21,7 @@ const PermissionController = {
         .status(400)
         .send({ status: 400, message: "Permission must be provided" });
     }
-    // check whether the role already has that permission
+
     const checkRoleHasPermission = await PermissionModal.checkPermissionForRole(
       roleId,
       permission.permission_id
@@ -37,8 +37,44 @@ const PermissionController = {
       roleId,
       permission.permission_id
     );
-    console.log(givePermission);
+
     return res.status(201).send({ message: "Permission given successfully " });
+  },
+  async fetchAllPermissionsOnARole(req, res) {
+    const roleId = req.params.role_id;
+    const getAllPermissions = await PermissionModal.getAllPermissionsOnASingleRole(
+      roleId
+    );
+    if (!getAllPermissions.length) {
+      return res
+        .status(404)
+        .send({ status: 404, message: "This Role has no permissions yet" });
+    }
+
+    return res.status(200).send({
+      status: 200,
+      data: getAllPermissions,
+    });
+  },
+  async revokePermission(req, res) {
+    const roleId = req.params.role_id;
+    const permissionId = req.params.permission_id;
+
+    await PermissionModal.revokePermission(roleId, permissionId);
+
+    return res
+      .status(200)
+      .send({ status: 200, message: "Permission revoked successfully" });
+  },
+
+  async fetchPermissionsNotForROle(req, res) {
+    const roleId = req.params.role_id;
+
+    const getPermissions = await PermissionModal.getPermissionNotForRole(
+      roleId
+    );
+
+    return res.status(200).send({ data: getPermissions, status: 200 });
   },
 };
 

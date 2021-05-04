@@ -26,6 +26,20 @@ const TaskController = {
 
     const currentUser = req.user;
 
+    const dateObj = new Date();
+    const month = dateObj.getUTCMonth() + 1; //months from 1-12
+    const day = dateObj.getUTCDate();
+    const year = dateObj.getUTCFullYear();
+
+    const date = year + "/" + month + "/" + day;
+
+    if (task.start_date < date || task.end_date < date) {
+      return res.status(400).send({
+        status: 400,
+        message: "Start or end date can not be before today",
+      });
+    }
+
     const { error } = await validate.validateNewTask(task);
     if (error)
       return res

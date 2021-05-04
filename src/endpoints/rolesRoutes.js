@@ -1,11 +1,12 @@
 import { Router } from "express";
 
 import Role from "../controllers/rolesController";
+import auth from "../middleware/auth";
 
 const router = Router();
 
-router.post("/roles", Role.createRoles);
+router.post("/roles", auth, Role.createRoles);
 
-router.get("/roles", Role.getAllRoles);
+router.get("/roles", auth, Role.getAllRoles);
 
 export default router;

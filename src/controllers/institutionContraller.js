@@ -21,7 +21,6 @@ const InstitutionController = {
     } else institution.use_sasula = false;
 
     const { error } = await validation.validateInput(institution);
-    console.log(error);
     if (error) {
       return res
         .status(400)
@@ -52,8 +51,6 @@ const InstitutionController = {
     };
 
     const createInstitution = await InstitutionModal.registerInstitution(data);
-    console.log(createInstitution);
-
     return res.status(201).send({
       status: 201,
       data: createInstitution[0],
@@ -92,16 +89,18 @@ const InstitutionController = {
     });
   },
 
-  async getAllAvailableInstitutionType(req, res) {
+  async getAllAvailableInstitutionTypes(req, res) {
     const getInstitutionTypes = await InstitutionModal.fetchAllInstitutionType();
-
     if (!getInstitutionTypes.length) {
       return res
         .status(404)
         .send({ status: 404, message: "No Institution types yet" });
     }
 
-    return res.status(200).send({ status: 200, data: getInstitutionTypes });
+    return res.status(200).send({
+      status: 200,
+      data: getInstitutionTypes,
+    });
   },
 
   async CreateInstitutionLeaders(req, res) {
@@ -187,7 +186,6 @@ const InstitutionController = {
     const { id } = InstitutionId[0];
 
     const getThem = await InstitutionModal.fetchAllLeadersOfAnInstitution(id);
-    console.log(getThem);
     return res.status(200).send({ status: 200, data: getThem });
   },
   async getAllInstitutions(req, res) {
@@ -200,6 +198,34 @@ const InstitutionController = {
       });
 
     return res.status(200).send({ status: 200, data: getAllInstitutions });
+  },
+  async fetchSingleInstitutionById(req, res) {
+    const institutionId = req.params.id;
+
+    const getInstitution = await InstitutionModal.getSingleInstitutionById(
+      institutionId
+    );
+    if (getInstitution.length === 0) {
+      return res
+        .status(404)
+        .send({ status: 404, message: "Institution not found" });
+    }
+    console.log(getInstitution);
+    return res.status(200).send({ status: 200, data: getInstitution });
+  },
+
+  async fetchSingleInstitutionLeadersById(req, res) {
+    const institutionId = req.params.id;
+
+    const getThem = await InstitutionModal.fetchAllLeadersOfAnInstitution(
+      institutionId
+    );
+    if (getThem.length === 0) {
+      return res
+        .status(404)
+        .send({ status: 404, message: "Institution not found" });
+    }
+    return res.status(200).send({ status: 200, data: getThem });
   },
 };
 

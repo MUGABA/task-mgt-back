@@ -6,6 +6,7 @@ import generateHash from "../helpers/generateHash";
 import generateToken from "../helpers/generateToken";
 import AuthModel from "../database/models/authModel";
 import RolesModel from "../database/models/rolesModel";
+import PermissionModal from "../database/models/permissionModel";
 
 const AuthController = {
   async getAllUsers(req, res) {
@@ -78,6 +79,7 @@ const AuthController = {
     }
 
     const checkUserExists = await AuthModel.checkUser(user.email);
+
     if (!checkUserExists.length) {
       return res
         .status(400)
@@ -90,8 +92,18 @@ const AuthController = {
       email,
       user_id,
       role,
-      level,
+      role_id,
     } = checkUserExists[0];
+
+    const permissions = await PermissionModal.getAllPermissionsOnASingleRoleName(
+      role_id
+    );
+
+    const permit = [];
+
+    for (const k of permissions) {
+      permit.push(k.permission);
+    }
 
     const validatePassword = await bcrypt.compare(user.password, password);
 
@@ -101,7 +113,7 @@ const AuthController = {
         .send({ status: 400, message: "Please check your password" });
     }
 
-    const token = await generateToken(user_id, email, username, role, level);
+    const token = await generateToken(user_id, email, username, role, permit);
     return res
       .status(200)
       .header("x-auth-token", token)
