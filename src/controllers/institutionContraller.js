@@ -58,7 +58,7 @@ const InstitutionController = {
     });
   },
 
-  async createAnInstitutionType(req, res) {
+  async createType(req, res) {
     const name = _.pick(req.body, ["type_name"]);
 
     const { error } = await validation.validateTypeCreation(name);
@@ -78,9 +78,8 @@ const InstitutionController = {
         .send({ status: 400, message: "Institution type already created" });
     }
 
-    const createInstitutionType = await InstitutionModal.registerInstitutionType(
-      name
-    );
+    const createInstitutionType =
+      await InstitutionModal.registerInstitutionType(name);
 
     return res.status(201).send({
       status: 201,
@@ -90,7 +89,8 @@ const InstitutionController = {
   },
 
   async getAllAvailableInstitutionTypes(req, res) {
-    const getInstitutionTypes = await InstitutionModal.fetchAllInstitutionType();
+    const getInstitutionTypes =
+      await InstitutionModal.fetchAllInstitutionType();
     if (!getInstitutionTypes.length) {
       return res
         .status(404)
@@ -103,7 +103,7 @@ const InstitutionController = {
     });
   },
 
-  async CreateInstitutionLeaders(req, res) {
+  async CreateInstitutionLeaders1(req, res) {
     const institutionName = req.params.name;
 
     const leader = _.pick(req.body, [
@@ -177,7 +177,7 @@ const InstitutionController = {
     const InstitutionId = await InstitutionModal.checkInstitution(
       institutionName
     );
-
+    console.log(InstitutionId);
     if (!InstitutionId.length)
       return res
         .status(404)
@@ -210,7 +210,7 @@ const InstitutionController = {
         .status(404)
         .send({ status: 404, message: "Institution not found" });
     }
-    console.log(getInstitution);
+
     return res.status(200).send({ status: 200, data: getInstitution });
   },
 
@@ -226,6 +226,19 @@ const InstitutionController = {
         .send({ status: 404, message: "Institution not found" });
     }
     return res.status(200).send({ status: 200, data: getThem });
+  },
+
+  async fetchLeaderById(req, res) {
+    const leaderId = req.params.id;
+
+    const getThemLeader = await InstitutionModal.getSingleLeader(leaderId);
+
+    if (getThemLeader.length === 0) {
+      return res
+        .status(404)
+        .send({ status: 404, message: "Institution not found" });
+    }
+    return res.status(200).send({ status: 200, data: getThemLeader });
   },
 };
 

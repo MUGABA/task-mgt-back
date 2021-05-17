@@ -337,6 +337,34 @@ const InstitutionModal = {
         return e;
       });
   },
+
+  async getSingleLeader(leaderId) {
+    return new Promise(async (reject, resolve) => {
+      const queryText = `
+        select il.leader_id as id,
+        il.first_name,
+        il.last_name,
+        il.email,
+        il.leader_contact,
+        il.leader_location
+        from institution_leaders il
+        where il.leader_id=$1;`;
+      await db.query(queryText, [leaderId], (err, res) => {
+        if (!err) {
+          const { rows } = res;
+
+          return resolve(rows);
+        }
+        return reject(err);
+      });
+    })
+      .then((result) => {
+        return result;
+      })
+      .catch((e) => {
+        return e;
+      });
+  },
 };
 
 export default InstitutionModal;

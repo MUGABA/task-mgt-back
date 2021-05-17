@@ -14,6 +14,39 @@ const TaskController = {
 
     return res.status(200).send({ status: 200, data: getAllTasks });
   },
+
+  async getAllTasksNew(req, res) {
+    const getAllTasks = await TasksModel.getAllTasksNew();
+
+    if (!getAllTasks.length) {
+      return res.status(200).send({ status: 200, message: "No tasks yet." });
+    }
+
+    return res.status(200).send({ status: 200, data: getAllTasks });
+  },
+
+  async getAllTasksINProgress(req, res) {
+    const getAllTasks = await TasksModel.getAllTasksInProgress();
+
+    if (!getAllTasks.length) {
+      return res.status(200).send({ status: 200, message: "No tasks yet." });
+    }
+
+    return res.status(200).send({ status: 200, data: getAllTasks });
+  },
+
+  async getAllTasksComplete(req, res) {
+    const getAllTasks = await TasksModel.getAllTasksComplete();
+
+    if (!getAllTasks.length) {
+      return res
+        .status(200)
+        .send({ status: 200, message: "No tasks yet.", data: [] });
+    }
+
+    return res.status(200).send({ status: 200, data: getAllTasks });
+  },
+
   async registerTask(req, res) {
     const task = _.pick(req.body, [
       "title",
@@ -71,7 +104,7 @@ const TaskController = {
     const { id } = currentUser;
 
     const createTask = await TasksModel.createTask(task, id);
-    console.log(createTask);
+
     if (createTask.code)
       return res.status(500).send({
         status: 500,
@@ -151,8 +184,6 @@ const TaskController = {
         message: "The supervisor your assigning does not exist",
       });
     }
-
-    // update the the assign id that references the users table
 
     await TasksModel.updateSupervisor(supervisor.supervisor, taskId);
 
@@ -255,8 +286,8 @@ const TaskController = {
       });
     }
 
-    const updatingTheDb = await TasksModel.updateTaskOnce(taskId, task);
-    console.log(updatingTheDb);
+    await TasksModel.updateTaskOnce(taskId, task);
+
     return res.status(200).send({
       status: 200,
       message: "Your the task has been updated successfully",

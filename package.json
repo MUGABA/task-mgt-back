@@ -7,6 +7,8 @@
   "author": "MUGABA <mugabamuha@gmail.com>",
   "license": "MIT",
   "scripts": {
+    "build": "babel src/app.js — out-file index-compiled.js",
+    "start": "src/app.js --exec babel-node",
     "dev": "nodemon src/app.js --exec babel-node"
   },
   "dependencies": {
@@ -16,13 +18,13 @@
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "express-async-errors": "^3.1.1",
+    "helmet": "^4.6.0",
     "joi": "^17.4.0",
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.21",
     "morgan": "^1.10.0",
     "multer": "^1.4.2",
     "pg": "^8.5.1",
-    "react-picklist": "^1.1.9",
     "winston": "^3.3.3"
   },
   "devDependencies": {

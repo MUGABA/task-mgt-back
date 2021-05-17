@@ -1,4 +1,5 @@
 {
   "secretkey": "secretkey",
-  "dbUrl": "dbUrl"
+  "dbUrl": "dbUrl",
+  "storageUrl":"storageUrl"
 }

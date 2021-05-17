@@ -1,4 +1,5 @@
 {
   "dbUrl": "postgresql://postgres:postgres@localhost:5432/tasks",
-  "secretkey": "my_secret_key"
+  "secretkey": "my_secret_key",
+  "storageUrl":"/home/nepserv/Desktop/uploads/"
 }

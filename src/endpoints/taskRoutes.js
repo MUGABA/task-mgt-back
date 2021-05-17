@@ -9,6 +9,12 @@ router.post("/tasks", auth, TaskController.registerTask);
 
 router.get("/tasks", auth, TaskController.getAllTasks);
 
+router.get("/tasks/new", auth, TaskController.getAllTasksNew);
+
+router.get("/tasks/progress", auth, TaskController.getAllTasksINProgress);
+
+router.get("/tasks/complete", auth, TaskController.getAllTasksComplete);
+
 router.get("/tasks/:task_id", auth, TaskController.getSingleTask);
 
 router.put("/tasks/:task_id", auth, TaskController.updateTaskOnce);

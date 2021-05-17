@@ -34,25 +34,24 @@ router.get(
 
 router.post(
   "/institutions/:name",
-  InstitutionController.CreateInstitutionLeaders
+  auth,
+  InstitutionController.CreateInstitutionLeaders1
 );
 
-router.post(
-  "/institutions/types",
-  auth,
-  InstitutionController.createAnInstitutionType
-);
+router.post("/types/create", auth, InstitutionController.createType);
 
 router.get(
-  "/institutions/types/all",
+  "/types/all",
   auth,
   InstitutionController.getAllAvailableInstitutionTypes
 );
 
 router.put("/leader/:leader_id", auth, InstitutionController.UpdateALeader);
 
+router.get("/leader/:id", auth, InstitutionController.fetchLeaderById);
+
 router.get(
-  "/leader/:name",
+  "/leaders/:name",
   auth,
   InstitutionController.getAllLeadersOfAnInstitution
 );
