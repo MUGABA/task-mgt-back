@@ -91,7 +91,8 @@ const AuthModel = {
             username,
             user_password as password,
             contact,
-            ro.role as role
+            ro.role as role,
+            ro.role_id as role_id
             from users u
             join roles ro
             on u.user_role = ro.role_id

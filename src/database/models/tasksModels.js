@@ -95,7 +95,7 @@ const TasksModel = {
         to_char(t.end_date,'YYYY-MM-DD') as end_date,
         u.username as assign,
         us.username as supervisor,
-        DATE_PART('day', "end_date"::timestamp - "start_date"::timestamp) as remaining_days,
+        DATE_PART('day', "end_date"::timestamp - now()::timestamp) as remaining_days,
         use.username as created_by,
         t.complete as complete
         from tasks t 
@@ -106,6 +106,108 @@ const TasksModel = {
         join users use
         on use.user_id=t.creator
         order by id;`;
+
+      await db.query(queryText, (err, res) => {
+        if (!err) {
+          const { rows } = res;
+          return resolve(rows);
+        }
+        return reject(err);
+      });
+    })
+      .then((res) => res)
+      .catch((e) => e);
+  },
+
+  getAllTasksNew() {
+    return new Promise(async (reject, resolve) => {
+      const queryText = `select 
+        t.task_id as id,
+        t.title as title,
+        to_char(t.start_date,'YYYY-MM-DD') as start_date,
+        to_char(t.end_date,'YYYY-MM-DD') as end_date,
+        u.username as assign,
+        us.username as supervisor,
+        DATE_PART('day', "end_date"::timestamp - now()::timestamp) as remaining_days,
+        use.username as created_by,
+        t.complete as complete
+        from tasks t 
+        join users u
+        on u.user_id = t.assign
+        join users us
+        on us.user_id=t.supervisor
+        join users use
+        on use.user_id=t.creator
+        where t.complete=0
+        order by id desc;`;
+
+      await db.query(queryText, (err, res) => {
+        if (!err) {
+          const { rows } = res;
+          return resolve(rows);
+        }
+        return reject(err);
+      });
+    })
+      .then((res) => res)
+      .catch((e) => e);
+  },
+
+  getAllTasksInProgress() {
+    return new Promise(async (reject, resolve) => {
+      const queryText = `select 
+        t.task_id as id,
+        t.title as title,
+        to_char(t.start_date,'YYYY-MM-DD') as start_date,
+        to_char(t.end_date,'YYYY-MM-DD') as end_date,
+        u.username as assign,
+        us.username as supervisor,
+        DATE_PART('day', "end_date"::timestamp - now()::timestamp) as remaining_days,
+        use.username as created_by,
+        t.complete as complete
+        from tasks t 
+        join users u
+        on u.user_id = t.assign
+        join users us
+        on us.user_id=t.supervisor
+        join users use
+        on use.user_id=t.creator
+        where t.complete between 1 and 99
+        order by id desc;`;
+
+      await db.query(queryText, (err, res) => {
+        if (!err) {
+          const { rows } = res;
+          return resolve(rows);
+        }
+        return reject(err);
+      });
+    })
+      .then((res) => res)
+      .catch((e) => e);
+  },
+
+  getAllTasksComplete() {
+    return new Promise(async (reject, resolve) => {
+      const queryText = `select 
+        t.task_id as id,
+        t.title as title,
+        to_char(t.start_date,'YYYY-MM-DD') as start_date,
+        to_char(t.end_date,'YYYY-MM-DD') as end_date,
+        u.username as assign,
+        us.username as supervisor,
+        DATE_PART('day', "end_date"::timestamp - now()::timestamp) as remaining_days,
+        use.username as created_by,
+        t.complete as complete
+        from tasks t 
+        join users u
+        on u.user_id = t.assign
+        join users us
+        on us.user_id=t.supervisor
+        join users use
+        on use.user_id=t.creator
+        where t.complete=100
+        order by t.task_id desc;`;
 
       await db.query(queryText, (err, res) => {
         if (!err) {
@@ -161,7 +263,7 @@ const TasksModel = {
         t.title as title,
         to_char(t.start_date,'YYYY-MM-DD') as start_date,
         to_char(t.end_date,'YYYY-MM-DD') as end_date,
-        DATE_PART('day', "end_date"::timestamp - "start_date"::timestamp) as remaining_days,
+        DATE_PART('day', "end_date"::timestamp - now()::timestamp) as remaining_days,
         u.username  as assign,
         us.username as supervisor,
         use.username as created_by,

@@ -7,7 +7,7 @@ const RolesModel = {
       db.query(queryText, (err, res) => {
         if (res) {
           const { rows } = res;
-          console.log(rows);
+
           return resolve(rows[0]);
         }
         return reject(err);
@@ -63,7 +63,7 @@ const RolesModel = {
 
   fetchAll() {
     return new Promise(async (reject, resolve) => {
-      const queryText = "SELECT   role_id as id, role FROM roles;";
+      const queryText = "SELECT role_id as id, role  FROM roles;";
 
       await db.query(queryText, (err, res) => {
         if (res) {
