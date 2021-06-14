@@ -6,14 +6,22 @@
   "repository": "https://github.com/MUGABA/task-mgt-back",
   "author": "MUGABA <mugabamuha@gmail.com>",
   "license": "MIT",
+  "engines": {
+    "node": "^15.14.0",
+    "npm":"7.10.0"
+  },
+  "private":"true",
   "scripts": {
-    "build": "babel src/app.js — out-file index-compiled.js",
-    "start": "src/app.js --exec babel-node",
+    "clean": "rm -rf build && mkdir build",
+    "build-babel": "babel -d ./build ./src -s",
+    "build": "npm run clean && npm run build-babel",
+    "start": "npm run build && node ./build/app.js",
     "dev": "nodemon src/app.js --exec babel-node"
   },
   "dependencies": {
     "@joi/date": "^2.1.0",
     "bcrypt": "^5.0.1",
+    "compression": "^1.7.4",
     "config": "^3.3.4",
     "cors": "^2.8.5",
     "express": "^4.17.1",

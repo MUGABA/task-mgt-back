@@ -11,9 +11,11 @@ import Comment from "../endpoints/commentRoutes";
 import Project from "../endpoints/projectRoutes";
 import Institution from "../endpoints/institutionRoutes";
 import Permissions from "../endpoints/permissionRoutes";
+import compression from "compression";
 require("express-async-errors");
 
 module.exports = (app) => {
+  app.use(compression());
   app.use(cors());
   app.use(helmet());
   app.use(express.json());
