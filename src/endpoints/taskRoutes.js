@@ -1,34 +1,29 @@
 import { Router } from "express";
-
-import auth from "../middleware/auth";
 import TaskController from "../controllers/tasksController";
+import auth from "../middleware/auth";
 
 const router = Router();
 
-router.post("/tasks", auth, TaskController.registerTask);
+router.post("/", auth, TaskController.registerTask);
 
-router.get("/tasks", auth, TaskController.getAllTasks);
+router.get("/", auth, TaskController.getAllTasks);
 
-router.get("/tasks/new", auth, TaskController.getAllTasksNew);
+router.get("/new", auth, TaskController.getAllTasksNew);
 
-router.get("/tasks/progress", auth, TaskController.getAllTasksINProgress);
+router.get("/progress", auth, TaskController.getAllTasksINProgress);
 
-router.get("/tasks/complete", auth, TaskController.getAllTasksComplete);
+router.get("/complete", auth, TaskController.getAllTasksComplete);
 
-router.get("/tasks/:task_id", auth, TaskController.getSingleTask);
+router.get("/:task_id", auth, TaskController.getSingleTask);
 
-router.put("/tasks/:task_id", auth, TaskController.updateTaskOnce);
+router.put("/:task_id", auth, TaskController.updateTaskOnce);
 
-router.delete("/tasks/:task_id", auth, TaskController.deleteTask);
+router.delete("/:task_id", auth, TaskController.deleteTask);
 
-router.patch("/tasks/:task_id", auth, TaskController.changeAssignee);
+router.patch("/:task_id", auth, TaskController.changeAssignee);
 
-router.patch(
-  "/tasks/supervisor/:task_id",
-  auth,
-  TaskController.changeSupervisor
-);
+router.patch("/supervisor/:task_id", auth, TaskController.changeSupervisor);
 
-router.patch("/tasks/progress/:task_id", auth, TaskController.updateProgress);
+router.put("/progress/update", auth, TaskController.updateProgress);
 
 export default router;

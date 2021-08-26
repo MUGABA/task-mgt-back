@@ -1,14 +1,13 @@
 import { Router } from "express";
-
-import auth from "../middleware/auth";
 import Comment from "../controllers/commentContoller";
+import auth from "../middleware/auth";
 
 const router = Router();
 
-router.post("/comment/:task_id", auth, Comment.createComment);
+router.post("/:task_id", auth, Comment.createComment);
 
-router.get("/comment/:task_id", auth, Comment.fetchAllCommentsOnATask);
+router.get("/:task_id", auth, Comment.fetchAllCommentsOnATask);
 
-router.delete("/comment/:comment_id", auth, Comment.deleteComment);
+router.delete("/:comment_id", auth, Comment.deleteComment);
 
 export default router;

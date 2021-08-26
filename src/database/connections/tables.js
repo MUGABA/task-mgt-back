@@ -1,250 +1,100 @@
-import { reject } from "lodash";
-import db from "./connection";
-
 const tasks = {
   create: `CREATE TABLE IF NOT EXISTS tasks (
-        task_id SERIAL PRIMARY KEY,
-        title VARCHAR(255) NOT NULL,
-        start_date TIMESTAMP,
-        end_date TIMESTAMP,
-        deliverables TEXT NOT NULL,
-        assign INTEGER,
-        supervisor INTEGER,
-        creator INTEGER,
-        complete INTEGER DEFAULT 0,
-        CONSTRAINT pk_assign FOREIGN KEY (assign) REFERENCES users(user_id),
-        CONSTRAINT pk_supervisor FOREIGN KEY (supervisor) REFERENCES users(user_id),
-        constraint pk_creator foreign key (creator) references users(user_id)
-    );`,
+          task_id serial NOT NULL,
+          title varchar(255) NOT NULL,
+          start_date timestamp NULL,
+          end_date timestamp NULL,
+          created_on timestamp NOT NULL DEFAULT now(),
+          assign int4 NULL,
+          supervisor int4 NULL,
+          creator int4 NULL,
+          status varchar NULL DEFAULT 0,
+          CONSTRAINT tasks_pkey PRIMARY KEY (task_id),
+          CONSTRAINT pk_assign FOREIGN KEY (assign) REFERENCES public.users(user_id),
+          CONSTRAINT pk_creator FOREIGN KEY (creator) REFERENCES public.users(user_id),
+          CONSTRAINT pk_supervisor FOREIGN KEY (supervisor) REFERENCES public.users(user_id)
+        );`,
   delete: "DROP TABLE IF EXISTS tasks;",
 };
 
 const comments = {
   create: `CREATE TABLE IF NOT EXISTS comments (
-        comment_id SERIAL PRIMARY KEY,
-        task INTEGER,
-        commenter INTEGER,
-        comment TEXT,
-        created_on TIMESTAMP DEFAULT NOW(),
-        CONSTRAINT pk_commenter FOREIGN KEY (commenter) REFERENCES users(user_id),
-        CONSTRAINT pk_task FOREIGN KEY (task) REFERENCES tasks (task_id)
-    );`,
+        comment_id serial NOT NULL,
+        task int4 NULL,
+        commenter int4 NULL,
+        "comment" text NULL,
+        created_on timestamp NULL DEFAULT now(),
+        CONSTRAINT comments_pkey PRIMARY KEY (comment_id),
+        CONSTRAINT pk_commenter FOREIGN KEY (commenter) REFERENCES public.users(user_id),
+        CONSTRAINT pk_task FOREIGN KEY (task) REFERENCES public.tasks(task_id) ON DELETE CASCADE
+);;`,
   delete: `DROP TABLE IF EXISTS comments;`,
 };
 
 const users = {
   create: `CREATE TABLE IF NOT EXISTS users (
-        user_id SERIAL PRIMARY KEY,
-        email VARCHAR(200) UNIQUE NOT NULL,
-        username VARCHAR(50) NOT NULL,
-        user_password TEXT NOT NULL,
-        contact VARCHAR(15) NOT NULL,
-        user_role INTEGER,
-        CONSTRAINT fk_position FOREIGN KEY (position) REFERENCES ranks(rank_id),
-        CONSTRAINT fk_role FOREIGN KEY (role) REFERENCES roles(role_id)
-    );`,
+        user_id serial NOT NULL,
+        email varchar(200) NOT NULL,
+        username varchar(50) NOT NULL,
+        user_password text NOT NULL,
+        contact varchar(15) NOT NULL,
+        created_on timestamp NOT NULL DEFAULT now(),
+        user_role int4 NULL,
+        CONSTRAINT users_email_key UNIQUE (email),
+        CONSTRAINT users_pkey PRIMARY KEY (user_id),
+        CONSTRAINT fk_role FOREIGN KEY (user_role) REFERENCES public.roles(role_id)
+      );`,
   delete: "DROP TABLE IF EXISTS users;",
-  anenum: `CREATE TYPE level AS ENUM('lead','member');`,
+  insert: `INSERT INTO users (email,username, user_password,contact,user_role)
+          VALUES('hello@gmail.com','hello',
+          '$2b$10$jaZZn1DqZspNdwQ3ZEKOgu8G38bRg3Wcixw0VBHMJqnNuM4nYaqf.',
+          '7983749303',1);`,
 };
-
-// these are roles that can be created....
 
 const roles = {
-  create: `CREATE TABLE IF NOT EXISTS roles(
-        role_id SERIAL PRIMARY KEY,
-        role VARCHAR(50) NOT NULL
-    );`,
-  delete: "DROP TABLE IS EXISTS roles;",
+  create: `CREATE TABLE IF NOT EXISTS roles (
+        role_id serial NOT NULL,
+        role varchar(50) NOT NULL,
+        CONSTRAINT roles_pkey PRIMARY KEY (role_id)
+      );`,
+  delete: "DROP TABLE IF EXISTS roles;",
+  insert: `INSERT INTO roles (role) VALUES('admin');`,
 };
 
-// Ranks... These define category where an individual falls, it could be a dev, a marketier, an admin,
-
-const projects = {
-  create: `CREATE TABLE IF NOT EXISTS projects (
-        project_id SERIAL PRIMARY KEY,
-        project_name VARCHAR(50) NOT NULL,
-        project_lead INTEGER
-    );`,
+const products = {
+  create: `CREATE TABLE public.products (
+        id bigserial NOT NULL,
+        product_name varchar(255) NOT NULL,
+        created_on timestamp NOT NULL DEFAULT now(),
+        created_by int8 NULL,
+        CONSTRAINT products_pkey PRIMARY KEY (id),
+        CONSTRAINT created_user FOREIGN KEY (created_by) REFERENCES public.users(user_id)
+      );`,
   delete: `DROP TABLE IF EXISTS projects;`,
 };
 
 const issue = {
-  create: `CREATE TABLE IF NOT EXISTS issues (
-        issue_id SERIAL PRIMARY KEY,
-        issue_title VARCHAR(200) NOT NULL,
-        project_id INTEGER,
-        dev_assigned INTEGER,
-        creator INTEGER,
-        created_on TIMESTAMP DEFAULT NOW();
-        status enum,
-        status enum
-    );`,
+  create: `CREATE TABLE public.issues (
+        id bigserial NOT NULL,
+        title varchar(200) NOT NULL,
+        description text NOT NULL,
+        product_id int4 NOT NULL,
+        created_by int4 NOT NULL,
+        assigned_user int4 NOT NULL,
+        rating int4 NOT NULL,
+        created_on timestamp NOT NULL DEFAULT now(),
+        closed_on timestamp NULL,
+        closed_by int4 NULL,
+        CONSTRAINT issues_pkey PRIMARY KEY (id),
+        CONSTRAINT assign FOREIGN KEY (assigned_user) REFERENCES public.users(user_id),
+        CONSTRAINT closser FOREIGN KEY (closed_by) REFERENCES public.users(user_id),
+        CONSTRAINT creator FOREIGN KEY (created_by) REFERENCES public.users(user_id),
+        CONSTRAINT product FOREIGN KEY (product_id) REFERENCES public.products(id)
+      );`,
   delete: "DROP TABLE IF EXISTS issues;",
 };
 
-const createTasksTable = () => {
-  return new Promise((reject, resolve) => {
-    db.query(tasks.create, (err) => {
-      if (!err) {
-        return resolve({ message: "tasks tables created successfully" });
-      }
-      return reject(err);
-    });
-  });
-};
-
-function deleteTasksTable() {
-  return new Promise((reject, resolve) => {
-    db.query(tasks.delete, (err) => {
-      if (!err) return resolve("table deleted");
-      return reject(err);
-    });
-  });
-}
-
-const createCommentsTable = () => {
-  return new Promise((reject, resolve) => {
-    db.query(comments.create, (err) => {
-      if (!err) {
-        return resolve("created");
-      }
-      return reject(err);
-    });
-  });
-};
-
-function deleteCommentsTable() {
-  return new Promise((reject, resolve) => {
-    db.query(comments.delete, (err) => {
-      if (!err) return resolve("table deleted");
-      return reject(err);
-    });
-  });
-}
-
-const createUsersTable = () => {
-  return new Promise((reject, resolve) => {
-    db.query(users.create, (err) => {
-      if (!err) {
-        return resolve("created");
-      }
-      return reject(err);
-    });
-  });
-};
-
-function deleteUsersTable() {
-  return new Promise((reject, resolve) => {
-    db.query(users.delete, (err) => {
-      if (!err) return resolve("table deleted");
-      return reject(err);
-    });
-  });
-}
-
-const createRolesTable = () => {
-  return new Promise((reject, resolve) => {
-    db.query(roles.create, (err) => {
-      if (!err) {
-        return resolve("created");
-      }
-      return reject(err);
-    });
-  });
-};
-
-function deleteRolesTable() {
-  return new Promise((reject, resolve) => {
-    db.query(roles.delete, (err) => {
-      if (!err) return resolve("table deleted");
-      return reject(err);
-    });
-  });
-}
-
-const createProjectsTable = () => {
-  return new Promise((reject, resolve) => {
-    db.query(projects.create, (err) => {
-      if (!err) {
-        return resolve("created");
-      }
-      return reject(err);
-    });
-  });
-};
-
-function deleteProjectsTable() {
-  return new Promise((reject, resolve) => {
-    db.query(projects.delete, (err) => {
-      if (!err) return resolve("table deleted");
-      return reject(err);
-    });
-  });
-}
-
-const createIssuesTable = () => {
-  return new Promise((reject, resolve) => {
-    db.query(issue.create, (err) => {
-      if (!err) {
-        return resolve("created");
-      }
-      return reject(err);
-    });
-  });
-};
-
-function deleteIssuesTable() {
-  return new Promise((reject, resolve) => {
-    db.query(issue.delete, (err) => {
-      if (!err) return resolve("table deleted");
-      return reject(err);
-    });
-  });
-}
-
-const createRanksTable = () => {
-  return new Promise((reject, resolve) => {
-    db.query(ranks.create, (err) => {
-      if (!err) {
-        return resolve("created");
-      }
-      return reject(err);
-    });
-  });
-};
-
-function deleteRanksTable() {
-  return new Promise((reject, resolve) => {
-    db.query(ranks.delete, (err) => {
-      if (!err) return resolve("table deleted");
-      return reject(err);
-    });
-  });
-}
-
-function createEnum() {
-  return new Promise((reject, resolve) => {
-    db.query(users.anenum, (err) => {
-      if (!err) return resolve("enum created");
-      return reject(err);
-    });
-  });
-}
-
 export default {
-  createTasksTable,
-  deleteTasksTable,
-  createCommentsTable,
-  deleteCommentsTable,
-  createUsersTable,
-  deleteUsersTable,
-  createRolesTable,
-  deleteRolesTable,
-  createProjectsTable,
-  deleteProjectsTable,
-  createIssuesTable,
-  deleteIssuesTable,
-  createRanksTable,
-  deleteRanksTable,
-  createEnum,
+  users,
+  roles,
 };

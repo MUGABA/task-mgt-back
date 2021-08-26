@@ -73,7 +73,7 @@ const TasksModel = {
 
   updateProgress(status, taskId) {
     return new Promise(async (reject, resolve) => {
-      const queryText = `UPDATE tasks SET complete = $1 WHERE task_id = $2;`;
+      const queryText = `UPDATE tasks SET status = $1 WHERE task_id = $2;`;
 
       await db.query(queryText, [status, taskId], (err, res) => {
         if (!err) {
@@ -97,7 +97,7 @@ const TasksModel = {
         us.username as supervisor,
         DATE_PART('day', "end_date"::timestamp - now()::timestamp) as remaining_days,
         use.username as created_by,
-        t.complete as complete
+        t.status as status
         from tasks t 
         join users u
         on u.user_id = t.assign
@@ -130,7 +130,7 @@ const TasksModel = {
         us.username as supervisor,
         DATE_PART('day', "end_date"::timestamp - now()::timestamp) as remaining_days,
         use.username as created_by,
-        t.complete as complete
+        t.status as status
         from tasks t 
         join users u
         on u.user_id = t.assign
@@ -138,7 +138,7 @@ const TasksModel = {
         on us.user_id=t.supervisor
         join users use
         on use.user_id=t.creator
-        where t.complete=0
+        where t.status = 'new'
         order by id desc;`;
 
       await db.query(queryText, (err, res) => {
@@ -164,7 +164,7 @@ const TasksModel = {
         us.username as supervisor,
         DATE_PART('day', "end_date"::timestamp - now()::timestamp) as remaining_days,
         use.username as created_by,
-        t.complete as complete
+        t.status as status
         from tasks t 
         join users u
         on u.user_id = t.assign
@@ -172,7 +172,7 @@ const TasksModel = {
         on us.user_id=t.supervisor
         join users use
         on use.user_id=t.creator
-        where t.complete between 1 and 99
+        where t.status = 'progress'
         order by id desc;`;
 
       await db.query(queryText, (err, res) => {
@@ -198,7 +198,7 @@ const TasksModel = {
         us.username as supervisor,
         DATE_PART('day', "end_date"::timestamp - now()::timestamp) as remaining_days,
         use.username as created_by,
-        t.complete as complete
+        t.status as status
         from tasks t 
         join users u
         on u.user_id = t.assign
@@ -206,7 +206,7 @@ const TasksModel = {
         on us.user_id=t.supervisor
         join users use
         on use.user_id=t.creator
-        where t.complete=100
+        where t.status='complete'
         order by t.task_id desc;`;
 
       await db.query(queryText, (err, res) => {
@@ -267,7 +267,7 @@ const TasksModel = {
         u.username  as assign,
         us.username as supervisor,
         use.username as created_by,
-        t.complete as complete
+        t.status as status
         from tasks t 
         join users u
         on u.user_id = t.assign
@@ -277,6 +277,21 @@ const TasksModel = {
         on use.user_id=t.creator
         where task_id=$1;`;
 
+      await db.query(queryText, [taskId], (err, res) => {
+        if (!err) {
+          const { rows } = res;
+          return resolve(rows);
+        }
+        return reject(err);
+      });
+    })
+      .then((res) => res)
+      .catch((err) => err);
+  },
+
+  updateTaskzStatus(status, taskId) {
+    return new Promise(async (reject, resolve) => {
+      const queryText = `UPDATE tasks set status='${status}' where task_id=$1;`;
       await db.query(queryText, [taskId], (err, res) => {
         if (!err) {
           const { rows } = res;

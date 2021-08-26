@@ -1,7 +1,6 @@
 import _ from "lodash";
-import TasksModel from "../database/models/tasksModels";
 import AuthModel from "../database/models/authModel";
-
+import TasksModel from "../database/models/tasksModels";
 import validate from "../validation/validateTasks";
 
 const TaskController = {
@@ -193,9 +192,7 @@ const TaskController = {
   },
 
   async updateProgress(req, res) {
-    const progress = _.pick(req.body, ["complete"]);
-
-    const taskId = req.params.task_id;
+    const progress = _.pick(req.body, ["status", "task_id"]);
 
     const currentUser = req.user;
 
@@ -206,7 +203,7 @@ const TaskController = {
         .send({ status: 400, message: error.details[0].message });
     }
 
-    const checkTaskAvailable = await TasksModel.findTaskById(taskId);
+    const checkTaskAvailable = await TasksModel.findTaskById(progress.task_id);
     if (!checkTaskAvailable.length) {
       return res
         .status(404)
@@ -224,7 +221,7 @@ const TaskController = {
       });
     }
 
-    await TasksModel.updateProgress(progress.complete, taskId);
+    await TasksModel.updateProgress(progress.status, progress.task_id);
 
     return res
       .status(200)

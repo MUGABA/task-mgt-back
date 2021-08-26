@@ -1,12 +1,11 @@
-import _ from "lodash";
 import bcrypt from "bcrypt";
-
-import validate from "../validation/authValidate";
+import _ from "lodash";
+import AuthModel from "../database/models/authModel";
+import PermissionModal from "../database/models/permissionModel";
+import RolesModel from "../database/models/rolesModel";
 import generateHash from "../helpers/generateHash";
 import generateToken from "../helpers/generateToken";
-import AuthModel from "../database/models/authModel";
-import RolesModel from "../database/models/rolesModel";
-import PermissionModal from "../database/models/permissionModel";
+import validate from "../validation/authValidate";
 
 const AuthController = {
   async getAllUsers(req, res) {
@@ -57,12 +56,6 @@ const AuthController = {
 
     const create = await AuthModel.registerUser(user);
 
-    if (create.code)
-      return res.status(500).send({
-        status: 500,
-        message: "something went wrong please contact the admin",
-      });
-
     return res.status(201).send({
       status: 201,
       data: _.omit(create[0], ["user_password"]),
@@ -86,18 +79,11 @@ const AuthController = {
         .send({ status: 400, message: "Please check your email" });
     }
 
-    const {
-      username,
-      password,
-      email,
-      user_id,
-      role,
-      role_id,
-    } = checkUserExists[0];
+    const { username, password, email, user_id, role, role_id } =
+      checkUserExists[0];
 
-    const permissions = await PermissionModal.getAllPermissionsOnASingleRoleName(
-      role_id
-    );
+    const permissions =
+      await PermissionModal.getAllPermissionsOnASingleRoleName(role_id);
 
     const permit = [];
 
@@ -164,6 +150,7 @@ const AuthController = {
       .send({ status: 200, message: "Update done successfully" });
     // give the user the token in the header to be given the the body of the user.
   },
+
   async me(req, res) {
     const currentUSer = req.user;
 
