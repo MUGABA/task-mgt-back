@@ -39,5 +39,5 @@ module.exports = (app) => {
   app.use("/nepserv", Institution);
   app.use("/products", Product);
   app.use("/issues", Issues);
-  app.use("/nepserv", Permissions);
+  app.use("/permissions", Permissions);
 };

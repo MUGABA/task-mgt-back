@@ -8,6 +8,10 @@ router.post("/add-issue", auth, IssuesController.createNewProductIssue);
 
 router.get("/view", auth, IssuesController.getAllIssues);
 
+router.put("/:issue_id", auth, IssuesController.updateIssueOnce);
+
+router.get("/view/:issue_id", auth, IssuesController.getSingleIssue);
+
 router.get("/view-product/:id", auth, IssuesController.getAllIssuesOnProduct);
 
 router.get("/new", auth, IssuesController.getAllIssuesInNewState);

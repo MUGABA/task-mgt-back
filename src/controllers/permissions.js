@@ -28,9 +28,22 @@ const PermissionController = {
     );
 
     if (checkRoleHasPermission.length) {
-      return res
-        .status(400)
-        .send({ status: 400, message: "Role already has this permission" });
+      const givenPermission = checkRoleHasPermission[0];
+
+      if (givePermission.status === "active")
+        return res
+          .status(400)
+          .send({ status: 400, message: "Role already has this permission" });
+
+      if (givePermission.status === "deactive") {
+        await PermissionModal.reActivatePermissionOnARole(
+          roleId,
+          permission.permission_id
+        );
+        return res
+          .status(200)
+          .send({ status: 200, message: "Permission given successfully" });
+      }
     }
 
     const givePermission = await PermissionModal.givePermission(
@@ -42,9 +55,8 @@ const PermissionController = {
   },
   async fetchAllPermissionsOnARole(req, res) {
     const roleId = req.params.role_id;
-    const getAllPermissions = await PermissionModal.getAllPermissionsOnASingleRole(
-      roleId
-    );
+    const getAllPermissions =
+      await PermissionModal.getAllPermissionsOnASingleRole(roleId);
     if (!getAllPermissions.length) {
       return res
         .status(404)

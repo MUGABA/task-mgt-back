@@ -59,7 +59,6 @@ const IssuesController = {
       });
 
     const createIssue = await IssueModal.createNewProductIssue(issue);
-    console.log("we reached here", createIssue);
     return res.status(201).send({
       status: 201,
       message: "Issue created successfully",
@@ -118,6 +117,65 @@ const IssuesController = {
         .send({ status: 404, message: "No Issues yet", data: [] });
 
     return res.status(200).send({ status: 200, data: allCompleteIssues });
+  },
+
+  async getSingleIssue(req, res) {
+    const issueId = req.params.issue_id;
+
+    const checkWhetherTheIssueIsAvailable = await IssueModal.getIssueById(
+      issueId
+    );
+
+    if (!checkWhetherTheIssueIsAvailable.length)
+      return res.status(404).send({ status: 404, message: "Issue not found" });
+
+    return res
+      .status(200)
+      .send({ status: 200, data: checkWhetherTheIssueIsAvailable[0] });
+  },
+
+  async updateIssueOnce(req, res) {
+    const issue = _.pick(req.body, [
+      "title",
+      "description",
+      "product_id",
+      "assigned_user",
+      "rating",
+    ]);
+
+    const issueId = req.params.issue_id;
+
+    //handling errors in the returned object.
+    const { error } = await validate.validateIssueCreation(issue);
+    if (error)
+      return res
+        .status(400)
+        .send({ status: 400, message: error.details[0].message });
+
+    const checkProductAvailable = await ProductModal.getProductById(
+      issue.product_id
+    );
+    if (!checkProductAvailable.length)
+      return res.status(404).send({
+        status: 404,
+        message: "Product you have selected does not exists",
+      });
+
+    // check whether assign is already available
+    const checkAssignAvailability = await AuthModal.checkUserWithId(
+      issue.assigned_user
+    );
+    if (!checkAssignAvailability.length)
+      return res.status(404).send({
+        status: 404,
+        message: "Assigned User is not available or the left",
+      });
+
+    await IssueModal.updateIssue(issue, issueId);
+
+    return res
+      .status(200)
+      .send({ status: 200, message: "Issue updated successfully" });
   },
 };
 

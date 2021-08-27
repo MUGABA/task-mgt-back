@@ -59,6 +59,41 @@ const IssuesModel = {
       .catch((err) => err);
   },
 
+  getIssueById(issueId) {
+    return new Promise(async (reject, resolve) => {
+      const queryText = `
+        select
+        i.id as id,
+        i.title as title,
+        i.description as description,
+        us.username as assignee,
+        to_char(i.created_on,'YYYY-MM-DD') as created_on,
+        u.username as created_by,
+        p.product_name as product
+        i.rating as rating
+        from issues i
+        join users u
+        on i.created_by = u.user_id
+        join users us
+        on i.assigned_user = us.user_id
+        join products p
+        on i.product_id = p.id
+        where i.id = $1
+        order by created_on
+        ;`;
+
+      await db.query(queryText, [issueId], (err, res) => {
+        if (res) {
+          const { rows } = res;
+          return resolve(rows);
+        }
+        return reject(err);
+      });
+    })
+      .then((res) => res)
+      .catch((err) => err);
+  },
+
   getAllIssuesOnProduct(productId) {
     return new Promise(async (reject, resolve) => {
       const queryText = `
@@ -197,6 +232,29 @@ const IssuesModel = {
     })
       .then((res) => res)
       .catch((err) => err);
+  },
+
+  updateIssue(rowData, issueId) {
+    return new Promise(async (reject, resolve) => {
+      const queryText = `UPDATE issues SET 
+      title='${rowData.title}',
+      description='${rowData.description}',
+      product_id='${rowData.product_id}',
+      created_by='${rowData.created_by}',
+      assigned_user='${rowData.assigned_user}',
+      rating='${rowData.rating}')
+      WHERE id=$1;`;
+
+      await db.query(queryText, [issueId], (err, res) => {
+        if (res) {
+          const { rows } = res;
+          return resolve(rows);
+        }
+        return reject(err);
+      });
+    })
+      .then((res) => res)
+      .catch((e) => e);
   },
 };
 
