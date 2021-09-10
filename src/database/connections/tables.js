@@ -47,7 +47,7 @@ const users = {
   delete: "DROP TABLE IF EXISTS users;",
   insert: `INSERT INTO users (email,username, user_password,contact,user_role)
           VALUES('hello@gmail.com','hello',
-          '$2b$10$jaZZn1DqZspNdwQ3ZEKOgu8G38bRg3Wcixw0VBHMJqnNuM4nYaqf.',
+          '$2b$10$x4/dZE7aPXgraALW.5Qq..tTL0Xh1g3134T.rizeIZt6vHusS0nD.',
           '7983749303',1);`,
 };
 

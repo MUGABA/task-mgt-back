@@ -14,6 +14,6 @@ router.get("/me", auth, AuthController.me);
 
 router.post("/login", AuthController.logInCustomer);
 
-router.patch("/auth", AuthController.updatePassword);
+router.patch("/", AuthController.updatePassword);
 
 export default router;

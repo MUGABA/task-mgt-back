@@ -7,13 +7,20 @@
   "author": "MUGABA <mugabamuha@gmail.com>",
   "license": "MIT",
   "private": "true",
+  "jest": {
+    "collectCoverage": true,
+    "coverageReporters": [
+      "json",
+      "html"
+    ]
+  },
   "scripts": {
     "clean": "rm -rf build && mkdir build",
     "build-babel": "babel -d ./build ./src -s",
     "build": "npm run clean && npm run build-babel",
     "start": "npm run build && node ./build/app.js",
     "dev": "nodemon src/app.js --exec babel-node",
-    "test": "NODE_ENV=test jest --watchAll"
+    "test": "NODE_ENV=test jest --watchAll --verbose"
   },
   "dependencies": {
     "@joi/date": "^2.1.0",

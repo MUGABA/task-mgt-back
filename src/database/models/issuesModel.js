@@ -66,10 +66,12 @@ const IssuesModel = {
         i.id as id,
         i.title as title,
         i.description as description,
+        i.assigned_user as Assign_id,
+        i.product_id as product_id,
         us.username as assignee,
         to_char(i.created_on,'YYYY-MM-DD') as created_on,
         u.username as created_by,
-        p.product_name as product
+        p.product_name as product,
         i.rating as rating
         from issues i
         join users u
@@ -240,12 +242,29 @@ const IssuesModel = {
       title='${rowData.title}',
       description='${rowData.description}',
       product_id='${rowData.product_id}',
-      created_by='${rowData.created_by}',
       assigned_user='${rowData.assigned_user}',
-      rating='${rowData.rating}')
+      rating='${rowData.rating}'
       WHERE id=$1;`;
 
       await db.query(queryText, [issueId], (err, res) => {
+        if (res) {
+          const { rows } = res;
+          return resolve(rows);
+        }
+        return reject(err);
+      });
+    })
+      .then((res) => res)
+      .catch((e) => e);
+  },
+
+  updateIssueStatus(rowData) {
+    return new Promise(async (reject, resolve) => {
+      const queryText = `UPDATE issues SET 
+      status='${rowData.status}'
+      WHERE id='${rowData.id}'`;
+
+      await db.query(queryText, (err, res) => {
         if (res) {
           const { rows } = res;
           return resolve(rows);

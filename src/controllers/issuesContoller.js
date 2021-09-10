@@ -146,7 +146,7 @@ const IssuesController = {
     const issueId = req.params.issue_id;
 
     //handling errors in the returned object.
-    const { error } = await validate.validateIssueCreation(issue);
+    const { error } = await validate.validateIssueUpdate(issue);
     if (error)
       return res
         .status(400)
@@ -171,11 +171,33 @@ const IssuesController = {
         message: "Assigned User is not available or the left",
       });
 
-    await IssueModal.updateIssue(issue, issueId);
-
+    const response = await IssueModal.updateIssue(issue, issueId);
+    console.log(response);
     return res
       .status(200)
       .send({ status: 200, message: "Issue updated successfully" });
+  },
+
+  async updateStatusOfTheIssue(req, res) {
+    const issue = _.pick(req.body, ["id", "status"]);
+
+    if (!issue.id || !issue.status)
+      return res
+        .status(400)
+        .send({ status: 400, message: "Issue or status must be provided" });
+
+    const checkWhetherTheIssueIsAvailable = await IssueModal.getIssueById(
+      issue.id
+    );
+
+    if (!checkWhetherTheIssueIsAvailable.length)
+      return res.status(404).send({ status: 404, message: "Issue not found" });
+
+    await IssueModal.updateIssueStatus(issue);
+
+    return res
+      .status(200)
+      .send({ status: 200, message: "Status updated successfully" });
   },
 };
 

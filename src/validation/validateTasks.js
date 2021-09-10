@@ -8,7 +8,7 @@ const ValidateTasks = {
       end_date: Joi.date(),
       assign: Joi.number(),
       supervisor: Joi.number(),
-      complete: Joi.number().allow(null),
+      status: Joi.string().required(),
     });
 
     return schema.validate(rowData);

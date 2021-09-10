@@ -85,12 +85,6 @@ const AuthController = {
     const permissions =
       await PermissionModal.getAllPermissionsOnASingleRoleName(role_id);
 
-    const permit = [];
-
-    for (const k of permissions) {
-      permit.push(k.permission);
-    }
-
     const validatePassword = await bcrypt.compare(user.password, password);
 
     if (!validatePassword) {
@@ -99,7 +93,13 @@ const AuthController = {
         .send({ status: 400, message: "Please check your password" });
     }
 
-    const token = await generateToken(user_id, email, username, role, permit);
+    const token = await generateToken(
+      user_id,
+      email,
+      username,
+      role,
+      permissions
+    );
     return res
       .status(200)
       .header("x-auth-token", token)
@@ -137,18 +137,9 @@ const AuthController = {
       user_id
     );
 
-    if (updatePassword.code) {
-      return res.status(500).send({
-        status: 500,
-        message: "something went wrong please contact admin",
-      });
-    }
-    console.log(updatePassword);
-
     return res
       .status(200)
       .send({ status: 200, message: "Update done successfully" });
-    // give the user the token in the header to be given the the body of the user.
   },
 
   async me(req, res) {
@@ -157,11 +148,6 @@ const AuthController = {
     const { id } = currentUSer;
 
     const getCurrentUser = await AuthModel.fetchCurrentUser(id);
-    if (!getCurrentUser.length) {
-      return res
-        .status(404)
-        .send({ status: 404, message: "User not available" });
-    }
 
     return res.status(200).send({
       status: 200,
@@ -170,12 +156,7 @@ const AuthController = {
     });
   },
   async updateUSerDetails(req, res) {
-    const user = _.pick(req.body, [
-      "email",
-      "username",
-      "contact",
-      "user_role",
-    ]);
+    const user = _.pick(req.body, ["email", "username", "contact"]);
     const currentUSer = req.user;
     const { id } = currentUSer;
     // get the user details from the body
@@ -191,14 +172,14 @@ const AuthController = {
     if (checkUserName.length && checkUserName[0].user_id !== id) {
       return res
         .status(400)
-        .send({ status: 400, message: "sorry your name is taken" });
+        .send({ status: 400, message: "Sorry That Name Is Taken" });
     }
     // create a method in the update the user details except for the password
     const info = await AuthModel.updateUserDetails(user, id);
-    console.log(info);
+
     return res
       .status(200)
-      .send({ status: 200, message: "details updated successfully" });
+      .send({ status: 200, message: "Details updated successfully" });
   },
 };
 

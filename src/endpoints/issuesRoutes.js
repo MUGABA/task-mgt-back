@@ -10,6 +10,8 @@ router.get("/view", auth, IssuesController.getAllIssues);
 
 router.put("/:issue_id", auth, IssuesController.updateIssueOnce);
 
+router.put("/", auth, IssuesController.updateStatusOfTheIssue);
+
 router.get("/view/:issue_id", auth, IssuesController.getSingleIssue);
 
 router.get("/view-product/:id", auth, IssuesController.getAllIssuesOnProduct);

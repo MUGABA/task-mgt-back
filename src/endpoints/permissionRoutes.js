@@ -4,6 +4,8 @@ import auth from "../middleware/auth";
 
 const router = Router();
 
+router.post("/", auth, PermissionController.addNewPermission);
+
 router.get("/", auth, PermissionController.fetchAllPermissions);
 
 router.post("/:role_id", auth, PermissionController.givePermission);

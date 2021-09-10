@@ -12,6 +12,36 @@ const PermissionController = {
     return res.status(200).send({ data: getPermissions });
   },
 
+  async addNewPermission(req, res) {
+    const permission = _.pick(req.body, ["permission"]);
+
+    if (!permission.permission)
+      return res
+        .status(400)
+        .send({ status: 400, message: "Permission Name must be provided" });
+
+    const checkPermissionNameExists =
+      await PermissionModal.checkWhetherPermissionNameAlreadyExists(
+        permission.permmison
+      );
+
+    if (checkPermissionNameExists.length)
+      return res.status(400).send({
+        status: 400,
+        message: "Permission with That Name Already Exists",
+      });
+
+    const createPermission = await PermissionModal.createNewPermmision(
+      permission
+    );
+
+    return res.status(201).send({
+      status: 201,
+      message: "Permission Created successfully",
+      permission: createPermission[0],
+    });
+  },
+
   async givePermission(req, res) {
     const roleId = req.params.role_id;
     const permission = _.pick(req.body, ["permission_id"]);

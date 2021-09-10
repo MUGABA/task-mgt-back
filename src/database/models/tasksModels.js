@@ -3,15 +3,14 @@ import db from "../connections/connection";
 const TasksModel = {
   createTask(rowData, currentUser) {
     return new Promise(async (reject, resolve) => {
-      const queryText = `INSERT INTO tasks(title,start_date, end_date,assign,supervisor,creator,complete)
+      const queryText = `INSERT INTO tasks(title,start_date, end_date,assign,supervisor,creator)
             values(
                 '${rowData.title}',
                 '${rowData.start_date}',
                 '${rowData.end_date}',
                 '${rowData.assign}',
                 '${rowData.supervisor}',
-                '${currentUser}',
-                '${rowData.complete}'
+                '${currentUser}'
             ) RETURNING *;`;
       await db.query(queryText, (err, res) => {
         if (!err) {
@@ -29,7 +28,7 @@ const TasksModel = {
   },
   findTaskById(taskId) {
     return new Promise(async (reject, resolve) => {
-      const queryText = "SELECT * FROM tasks WHERE task_id = $1;";
+      const queryText = `select * from tasks where task_id=$1;`;
 
       await db.query(queryText, [taskId], (err, res) => {
         if (!err) {
@@ -243,7 +242,7 @@ const TasksModel = {
       end_date='${rowData.end_date}',
       assign='${rowData.assign}',
       supervisor='${rowData.supervisor}',
-      complete='${rowData.complete}'
+      status='${rowData.status}'
       WHERE task_id='${taskId}';`;
 
       await db.query(queryText, (err, res) => {
@@ -267,6 +266,8 @@ const TasksModel = {
         u.username  as assign,
         us.username as supervisor,
         use.username as created_by,
+        t.assign as assign_id,
+        t.supervisor as supervisor_id,
         t.status as status
         from tasks t 
         join users u

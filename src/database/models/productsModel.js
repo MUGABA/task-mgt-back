@@ -3,10 +3,12 @@ import db from "../connections/connection";
 const ProductModel = {
   createNewProduct(rowData) {
     return new Promise(async (reject, resolve) => {
-      const queryText = `INSERT INTO products (product_name,created_by)
+      const queryText = `INSERT INTO products (product_name,created_by,project_manager)
             values(
                 '${rowData.product_name}',
-                '${rowData.created_by}'
+                '${rowData.created_by}',
+                '${rowData.project_manager}'
+
             ) RETURNING *;`;
 
       await db.query(queryText, (err, res) => {
@@ -28,10 +30,13 @@ const ProductModel = {
         p.id as id,
         product_name as product,
         to_char(p.created_on,'YYYY-MM-DD') as created_on,
-        u.username as creator
+        u.username as creator,
+        pm.username as pm
         from products p
         join users u
         on p.created_by = u.user_id
+        join users pm
+        on p.project_manager = pm.user_id
         ;`;
 
       await db.query(queryText, (err, res) => {
