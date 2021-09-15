@@ -6,4 +6,4 @@ services:
 before_script:
   - psql -c 'create database tasks_test;' -U postgres
 script:
-  - node /src/app.js
+  - node ./src/app.js
