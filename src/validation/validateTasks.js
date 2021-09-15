@@ -8,7 +8,7 @@ const ValidateTasks = {
       end_date: Joi.date(),
       assign: Joi.number(),
       supervisor: Joi.number(),
-      complete: Joi.number().allow(null),
+      status: Joi.string().required(),
     });
 
     return schema.validate(rowData);
@@ -31,7 +31,8 @@ const ValidateTasks = {
 
   ValidateUpdateProgress(rowData) {
     const schema = Joi.object().keys({
-      complete: Joi.number().required(),
+      task_id: Joi.number().required(),
+      status: Joi.string().required().valid("new", "progress", "complete"),
     });
 
     return schema.validate(rowData);

@@ -1,6 +1,5 @@
 import config from "config";
 import { Pool } from "pg";
-
 import logger from "../../helpers/logger";
 
 const pool = new Pool({
@@ -8,8 +7,11 @@ const pool = new Pool({
 });
 
 pool.connect((err, res) => {
-  if (err) logger.info("please check ypur connection", err);
-  logger.info("your successfully connected to the database");
+  if (err) return logger.info("please check ypur connection", err);
+  logger.info(
+    "your successfully connected to the database",
+    process.env.NODE_ENV
+  );
 });
 
 export default pool;

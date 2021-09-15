@@ -1,6 +1,29 @@
 import db from "../connections/connection";
 
 const PermissionModal = {
+  createNewPermmision(rowData) {
+    return new Promise(async (reject, resolve) => {
+      const queryText = `INSERT INTO permissions (permission_name)
+            values(
+                '${rowData.permission}'
+            )
+            RETURNING *;`;
+
+      await db.query(queryText, (err, res) => {
+        if (!err) {
+          const { rows } = res;
+          return resolve(rows);
+        }
+        return reject(err);
+      });
+    })
+      .then((result) => {
+        return result;
+      })
+      .catch((e) => {
+        return e;
+      });
+  },
   getAllPermissions() {
     return new Promise(async (reject, resolve) => {
       const textQuery = `
@@ -37,6 +60,7 @@ const PermissionModal = {
       .then((res) => res)
       .catch((err) => err);
   },
+
   checkPermissionForRole(roleId, permissionId) {
     return new Promise(async (reject, resolve) => {
       const queryText = `select * from  role_permissions where role=$1 and permission=$2;`;
@@ -52,6 +76,7 @@ const PermissionModal = {
       .then((res) => res)
       .catch((err) => err);
   },
+
   getAllPermissionsOnASingleRole(roleId) {
     return new Promise(async (reject, resolve) => {
       const queryText = `
@@ -61,7 +86,7 @@ const PermissionModal = {
       from role_permissions r
       join permissions p
       on p.permision_id = r.permission
-      where r.role = $1;
+      where r.role = $1 and r.status='active';
       `;
       await db.query(queryText, [roleId], (err, res) => {
         if (!err) {
@@ -98,7 +123,25 @@ const PermissionModal = {
 
   revokePermission(roleId, permissionId) {
     return new Promise(async (reject, resolve) => {
-      const queryText = `delete from  role_permissions where role=$1 and permission=$2;`;
+      const queryText = `UPDATE role_permissions 
+      SET status='deactive'
+      where role=$1 and permission=$2;`;
+
+      await db.query(queryText, [roleId, permissionId], (err, res) => {
+        if (!err) {
+          const { rows } = res;
+          return resolve(rows);
+        }
+        return reject(err);
+      });
+    })
+      .then((res) => res)
+      .catch((err) => err);
+  },
+
+  reActivatePermissionOnARole(roleId, permissionId) {
+    return new Promise(async (reject, resolve) => {
+      const queryText = `UPDATE role_permissions SET status='active' where role=$1 and permission=$2;`;
 
       await db.query(queryText, [roleId, permissionId], (err, res) => {
         if (!err) {
@@ -118,9 +161,30 @@ const PermissionModal = {
       permision_id as id, 
       permission_name as permission
       from permissions
-      where permision_id not in (select permission from role_permissions where role='${roleId}');`;
+      where permision_id not in
+      (select permission from role_permissions where role='${roleId}' and status='active');`;
 
       await db.query(queryText, (err, res) => {
+        if (!err) {
+          const { rows } = res;
+          return resolve(rows);
+        }
+        return reject(err);
+      });
+    })
+      .then((res) => res)
+      .catch((err) => err);
+  },
+
+  checkWhetherPermissionNameAlreadyExists(permiisionName) {
+    return new Promise(async (reject, resolve) => {
+      const queryText = `select 
+      permision_id as id, 
+      permission_name as permission
+      from permissions
+      where permission_name=$1`;
+
+      await db.query(queryText, [permiisionName], (err, res) => {
         if (!err) {
           const { rows } = res;
           return resolve(rows);

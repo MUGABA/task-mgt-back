@@ -1,7 +1,6 @@
 import _ from "lodash";
-import TasksModel from "../database/models/tasksModels";
 import AuthModel from "../database/models/authModel";
-
+import TasksModel from "../database/models/tasksModels";
 import validate from "../validation/validateTasks";
 
 const TaskController = {
@@ -9,7 +8,9 @@ const TaskController = {
     const getAllTasks = await TasksModel.getAllTasks();
 
     if (!getAllTasks.length) {
-      return res.status(200).send({ status: 200, message: "No tasks yet." });
+      return res
+        .status(200)
+        .send({ status: 200, message: "No tasks yet.", data: [] });
     }
 
     return res.status(200).send({ status: 200, data: getAllTasks });
@@ -19,7 +20,9 @@ const TaskController = {
     const getAllTasks = await TasksModel.getAllTasksNew();
 
     if (!getAllTasks.length) {
-      return res.status(200).send({ status: 200, message: "No tasks yet." });
+      return res
+        .status(200)
+        .send({ status: 200, message: "No tasks yet.", data: [] });
     }
 
     return res.status(200).send({ status: 200, data: getAllTasks });
@@ -29,7 +32,9 @@ const TaskController = {
     const getAllTasks = await TasksModel.getAllTasksInProgress();
 
     if (!getAllTasks.length) {
-      return res.status(200).send({ status: 200, message: "No tasks yet." });
+      return res
+        .status(200)
+        .send({ status: 200, message: "No tasks yet.", data: [] });
     }
 
     return res.status(200).send({ status: 200, data: getAllTasks });
@@ -54,24 +59,18 @@ const TaskController = {
       "end_date",
       "assign",
       "supervisor",
-      "complete",
+      "status",
     ]);
 
     const currentUser = req.user;
 
-    const dateObj = new Date();
-    const month = dateObj.getUTCMonth() + 1; //months from 1-12
-    const day = dateObj.getUTCDate();
-    const year = dateObj.getUTCFullYear();
+    const startDate = new Date(task.start_date);
+    const finishDate = new Date(task.end_date);
 
-    const date = year + "/" + month + "/" + day;
-
-    if (task.start_date < date || task.end_date < date) {
-      return res.status(400).send({
-        status: 400,
-        message: "Start or end date can not be before today",
-      });
-    }
+    if (startDate > finishDate)
+      return res
+        .status(400)
+        .send({ status: 400, message: "Start date must before end date" });
 
     const { error } = await validate.validateNewTask(task);
     if (error)
@@ -81,7 +80,7 @@ const TaskController = {
 
     if (task.assign) {
       const checkAssign = await AuthModel.checkUserWithId(task.assign);
-      console.log(checkAssign);
+
       if (!checkAssign.length) {
         return res.status(400).send({
           status: 400,
@@ -193,9 +192,7 @@ const TaskController = {
   },
 
   async updateProgress(req, res) {
-    const progress = _.pick(req.body, ["complete"]);
-
-    const taskId = req.params.task_id;
+    const progress = _.pick(req.body, ["status", "task_id"]);
 
     const currentUser = req.user;
 
@@ -206,7 +203,7 @@ const TaskController = {
         .send({ status: 400, message: error.details[0].message });
     }
 
-    const checkTaskAvailable = await TasksModel.findTaskById(taskId);
+    const checkTaskAvailable = await TasksModel.findTaskById(progress.task_id);
     if (!checkTaskAvailable.length) {
       return res
         .status(404)
@@ -217,14 +214,14 @@ const TaskController = {
     const { assign } = checkTaskAvailable[0];
 
     if (id !== assign) {
-      return res.status(401).send({
-        status: 401,
+      return res.status(400).send({
+        status: 400,
         message:
           "Your not allowed to update a tasks progress your not assigned to",
       });
     }
 
-    await TasksModel.updateProgress(progress.complete, taskId);
+    await TasksModel.updateProgress(progress.status, progress.task_id);
 
     return res
       .status(200)
@@ -257,7 +254,7 @@ const TaskController = {
       "end_date",
       "assign",
       "supervisor",
-      "complete",
+      "status",
     ]);
 
     const currentUser = req.user;
@@ -278,15 +275,14 @@ const TaskController = {
     const { id } = currentUser;
     const { assign, supervisor } = checkTaskAvailable[0];
 
-    if (id !== assign || id !== supervisor) {
-      return res.status(401).send({
-        status: 401,
-        message:
-          "Your not allowed to update a tasks progress your not assigned to",
-      });
-    }
+    // if (id !== assign || id !== supervisor) {
+    //   return res.status(401).send({
+    //     status: 401,
+    //     message: "You must assignee or supervisor to update the task ",
+    //   });
+    // }
 
-    await TasksModel.updateTaskOnce(taskId, task);
+    const response = await TasksModel.updateTaskOnce(taskId, task);
 
     return res.status(200).send({
       status: 200,

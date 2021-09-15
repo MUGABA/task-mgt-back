@@ -3,7 +3,7 @@ import Joi from "joi";
 const ValidateUser = {
   validateInput(rowData) {
     const schema = Joi.object().keys({
-      email: Joi.string().required(),
+      email: Joi.string().email().required(),
       username: Joi.string().required(),
       user_password: Joi.string().alphanum().min(6).max(20),
       contact: Joi.string().required(),
@@ -13,7 +13,7 @@ const ValidateUser = {
   },
   validateLogin(rowData) {
     const schema = Joi.object().keys({
-      email: Joi.string().required(),
+      email: Joi.string().email().required(),
       password: Joi.string().alphanum().min(6).max(20),
     });
     return schema.validate(rowData);
@@ -27,10 +27,9 @@ const ValidateUser = {
   },
   validateUSerUpdate(rowData) {
     const schema = Joi.object().keys({
-      email: Joi.string(),
+      email: Joi.string().email().required(),
       username: Joi.string(),
       contact: Joi.string(),
-      user_role: Joi.number(),
     });
     return schema.validate(rowData);
   },

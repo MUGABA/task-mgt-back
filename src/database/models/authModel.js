@@ -179,8 +179,7 @@ const AuthModel = {
       const textQuery = `UPDATE users SET
        email='${rowData.email}',
        username='${rowData.username}',
-       contact='${rowData.contact}',
-       user_role='${rowData.user_role}'
+       contact='${rowData.contact}'
         WHERE user_id='${userId}'`;
       await db.query(textQuery, (err, res) => {
         if (res) {
