@@ -1,3 +1,7 @@
 language: node_js
 node_js:
   - 14
+services:
+  - postgresql
+before_script:
+  - psql -c 'create database tasks_test;' -U postgres
