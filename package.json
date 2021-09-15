@@ -20,7 +20,8 @@
     "build": "npm run clean && npm run build-babel",
     "start": "npm run build && node ./build/app.js",
     "dev": "nodemon src/app.js --exec babel-node",
-    "test": "jest --watchAll --verbose"
+    "test": "jest --watchAll --verbose",
+    "coverage": "yarn pretest && jest --coverage && cat ./coverage/lcov.info | coveralls"
   },
   "dependencies": {
     "@joi/date": "^2.1.0",
@@ -48,6 +49,7 @@
     "@babel/preset-env": "^7.13.9",
     "babel-jest": "^27.0.6",
     "babel-polyfill": "^6.26.0",
+    "coveralls": "^3.1.1",
     "nodemon": "^2.0.7"
   }
 }
