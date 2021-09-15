@@ -7,4 +7,3 @@ before_script:
   - psql -c 'create database tasks_test;' -U postgres
 script:
   - yarn test
-install: travis_wait mvn install
