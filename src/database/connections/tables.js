@@ -14,7 +14,7 @@ const tasks = {
           CONSTRAINT pk_creator FOREIGN KEY (creator) REFERENCES public.users(user_id),
           CONSTRAINT pk_supervisor FOREIGN KEY (supervisor) REFERENCES public.users(user_id)
         );`,
-  delete: "DROP TABLE IF EXISTS tasks;",
+  delete: "DROP TABLE IF EXISTS tasks cascade;",
 };
 
 const comments = {
@@ -28,7 +28,7 @@ const comments = {
         CONSTRAINT pk_commenter FOREIGN KEY (commenter) REFERENCES public.users(user_id),
         CONSTRAINT pk_task FOREIGN KEY (task) REFERENCES public.tasks(task_id) ON DELETE CASCADE
 );;`,
-  delete: `DROP TABLE IF EXISTS comments;`,
+  delete: `DROP TABLE IF EXISTS comments cascade;`,
 };
 
 const users = {
@@ -44,7 +44,7 @@ const users = {
         CONSTRAINT users_pkey PRIMARY KEY (user_id),
         CONSTRAINT fk_role FOREIGN KEY (user_role) REFERENCES public.roles(role_id)
       );`,
-  delete: "DROP TABLE IF EXISTS users;",
+  delete: "DROP TABLE IF EXISTS users cascade;",
   insert: `INSERT INTO users (email,username, user_password,contact,user_role)
           VALUES('hello@gmail.com','hello',
           '$2b$10$x4/dZE7aPXgraALW.5Qq..tTL0Xh1g3134T.rizeIZt6vHusS0nD.',
@@ -57,7 +57,7 @@ const roles = {
         role varchar(50) NOT NULL,
         CONSTRAINT roles_pkey PRIMARY KEY (role_id)
       );`,
-  delete: "DROP TABLE IF EXISTS roles;",
+  delete: "DROP TABLE IF EXISTS roles cascade;",
   insert: `INSERT INTO roles (role) VALUES('admin');`,
 };
 
@@ -70,7 +70,7 @@ const products = {
         CONSTRAINT products_pkey PRIMARY KEY (id),
         CONSTRAINT created_user FOREIGN KEY (created_by) REFERENCES public.users(user_id)
       );`,
-  delete: `DROP TABLE IF EXISTS projects;`,
+  delete: `DROP TABLE IF EXISTS projects cascade;`,
 };
 
 const issue = {
@@ -91,10 +91,12 @@ const issue = {
         CONSTRAINT creator FOREIGN KEY (created_by) REFERENCES public.users(user_id),
         CONSTRAINT product FOREIGN KEY (product_id) REFERENCES public.products(id)
       );`,
-  delete: "DROP TABLE IF EXISTS issues;",
+  delete: "DROP TABLE IF EXISTS issues cascade;",
 };
 
 export default {
   users,
   roles,
+  comments,
+  tasks,
 };

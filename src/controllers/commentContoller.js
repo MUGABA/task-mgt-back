@@ -1,20 +1,19 @@
 import _ from "lodash";
-
-import validate from "../validation/validateComment";
-import Task from "../database/models/tasksModels";
 import Comment from "../database/models/commentsModel";
+import Task from "../database/models/tasksModels";
+import validate from "../validation/validateComment";
 
 const CommentController = {
   async createComment(req, res) {
     const comment = _.pick(req.body, ["comment"]);
     const taskId = req.params.task_id;
-    const currentUser = req.user;
+    const { id } = req.user;
 
     const { error } = await validate.validateComment(comment);
     if (error) {
       return res
-        .status(404)
-        .send({ status: 404, message: error.details[0].message });
+        .status(400)
+        .send({ status: 400, message: error.details[0].message });
     }
 
     const checkTaskAvailable = await Task.findTaskById(taskId);
@@ -24,9 +23,7 @@ const CommentController = {
         message: "Task your commenting on is no longer available",
       });
     }
-    // destructuring off the the current id that we neet
-    const { id } = currentUser;
-    // creating new object to be passed to the insert function
+
     const obj = {
       task: taskId,
       commenter: id,

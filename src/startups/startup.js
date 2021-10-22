@@ -31,7 +31,7 @@ module.exports = (app) => {
     express.static(path.resolve(`${__dirname}/../../uploads`))
   );
 
-  app.get("/", (req, res) => res.send("Hello World!"));
+  app.get("/", (req, res) => res.send({ message: "Hello World!" }));
   app.use("/auth", Auth);
   app.use("/roles", Role);
   app.use("/tasks", Tasks);

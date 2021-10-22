@@ -20,10 +20,6 @@ router.put("/:task_id", auth, TaskController.updateTaskOnce);
 
 router.delete("/:task_id", auth, TaskController.deleteTask);
 
-router.patch("/:task_id", auth, TaskController.changeAssignee);
-
-router.patch("/supervisor/:task_id", auth, TaskController.changeSupervisor);
-
 router.put("/progress/update", auth, TaskController.updateProgress);
 
 export default router;

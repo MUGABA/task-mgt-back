@@ -40,7 +40,6 @@ const CommentModel = {
       await db.query(queryText, [taskId], (err, res) => {
         if (res) {
           const { rows } = res;
-          console.log(rows);
           return resolve(rows);
         }
         return reject(err);
