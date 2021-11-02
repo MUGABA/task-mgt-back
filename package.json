@@ -18,7 +18,7 @@
     "node": "14.x"
   },
   "scripts": {
-    "clean": "rm -rf build && mkdir build",
+    "clean": "mkdir build",
     "build-babel": "babel -d ./build ./src -s",
     "build": "yarn clean && yarn build-babel",
     "start": "yarn build && node ./build/app.js",
