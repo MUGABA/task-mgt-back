@@ -20,8 +20,8 @@
   "scripts": {
     "clean": "rm -rf build && mkdir build",
     "build-babel": "babel -d ./build ./src -s",
-    "build": "npm run clean && npm run build-babel",
-    "start": "npm run build && node ./build/app.js",
+    "build": "yarn clean && yarn build-babel",
+    "start": "yarn build && node ./build/app.js",
     "dev": "nodemon src/app.js --exec babel-node",
     "test": "NODE_ENV=test jest --watchAll --verbose --detectOpenHandles --collectCoverage"
   },
