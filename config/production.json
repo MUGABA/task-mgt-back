@@ -1,5 +1,5 @@
 {
-    "dbUrl": "",
-    "secretkey": "",
-    "storageUrl":""
+    "dbUrl": "postgres://nghpgpddohhgex:cadbe2a9d97ac8e07c09d21de6c8aff808fb7a3bb46b939b02da6f8727daee34@ec2-54-210-226-209.compute-1.amazonaws.com:5432/d51gbu2k55poj5",
+    "secretkey": "my_secret_key",
+    "storageUrl":"jlkj"
   }
