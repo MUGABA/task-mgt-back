@@ -1,7 +1,6 @@
 import _ from "lodash";
-
-import validate from "../validation/rolesValidation";
 import Role from "../database/models/rolesModel";
+import validate from "../validation/rolesValidation";
 
 const RolesControllers = {
   async getAllRoles(req, res) {
@@ -23,7 +22,6 @@ const RolesControllers = {
       return res.status(400).send({ message: "The role already exists" });
 
     const create = await Role.createRole(role);
-    console.log(create);
     return res.status(201).send({
       status: 201,
       data: create,
