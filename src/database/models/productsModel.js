@@ -3,11 +3,11 @@ import db from "../connections/connection";
 const ProductModel = {
   createNewProduct(rowData) {
     return new Promise(async (reject, resolve) => {
-      const queryText = `INSERT INTO products (product_name,created_by,project_manager)
+      const queryText = `INSERT INTO products (name,created_by,manager)
             values(
-                '${rowData.product_name}',
+                '${rowData.name}',
                 '${rowData.created_by}',
-                '${rowData.project_manager}'
+                '${rowData.manager}'
 
             ) RETURNING *;`;
 
@@ -28,7 +28,7 @@ const ProductModel = {
       const queryText = `
         select
         p.id as id,
-        product_name as product,
+        name as product,
         to_char(p.created_on,'YYYY-MM-DD') as created_on,
         u.username as creator,
         pm.username as pm

@@ -14,7 +14,7 @@ const ProductController = {
     return res.status(200).send({ status: 200, data: products });
   },
   async createNewProduct(req, res) {
-    let product = _.pick(req.body, ["product_name", "project_manager"]);
+    let product = _.pick(req.body, ["name", "manager"]);
 
     const { id } = req.user;
 
@@ -38,7 +38,7 @@ const ProductController = {
         .send({ status: 404, message: "selected user is no longer available" });
 
     const createdProduct = await ProductModel.createNewProduct(product);
-    console.log(createdProduct);
+
     return res.status(200).send({ status: 200, data: createdProduct[0] });
   },
 };
